@@ -3,7 +3,8 @@ import Header from "./components/Header"
 import Score from "./components/Score"
 import Input from "./components/Input"
 import How from "./components/How"
-import FAQ from "./components/FAQ"
+import Faq from "./components/Faq"
+import Foot from "./components/Foot"
 
 export default function App() {
   return (
@@ -12,7 +13,8 @@ export default function App() {
       <Score game={729} guesses={0} />
       <Input />
       <How />
-      <FAQ />    
+      <Faq />
+      <Foot />    
     </main>
   )
 }
