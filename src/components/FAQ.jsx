@@ -17,14 +17,14 @@ export default function FAQ() {
                         <h5 className="text-base leading-normal font-bold">How is the word order defined?</h5>
                         <img src="./expand.svg" className=" w-[25px] h-[25px]" alt="see answer" />
                     </div>
-                    <p className={`${visAns1 ? 'visible' : 'hidden'} text-base font-medium pt-[15px]`}>The game uses an artificial intelligence algorithm and thousands of texts to calculate the similarity of the words in relation to the word of the day. Not necessarily it is related to the meaning of the words, but to the proximity in which they are used on the internet. For example, if the word of the day were “infinite”, words related to “love” or words related to “universe” might be close to the word of the day because “infinite” is commonly used in those two different contexts. In similar reasoning, if “tv” and “television”, for example, are in very different positions, it means that they are used differently in relation to the word of the day, despite being the same object.</p>
+                    <h6 className={`${visAns1 ? 'visible' : 'hidden'} text-base font-medium pt-[15px]`}>The game uses an artificial intelligence algorithm and thousands of texts to calculate the similarity of the words in relation to the word of the day. Not necessarily it is related to the meaning of the words, but to the proximity in which they are used on the internet. For example, if the word of the day were “infinite”, words related to “love” or words related to “universe” might be close to the word of the day because “infinite” is commonly used in those two different contexts. In similar reasoning, if “tv” and “television”, for example, are in very different positions, it means that they are used differently in relation to the word of the day, despite being the same object.</h6>
                 </div>
                 <div className="flex flex-col justify-start items-left w-full pb-[10px]">
                     <div className="flex flex-row gap-[8px] justify-between items-left w-full cursor-pointer" onClick={() => setVisAns2(!visAns2)}>
                         <h5 className="text-base leading-normal font-bold">How can I ask for a hint?</h5>
                         <img src="./expand.svg" className="w-[25px] h-[25px]" alt="see answer"/>
                     </div>
-                    <p className={`${visAns2 ? 'visible' : 'hidden'} text-base font-medium pt-[15px]`}>Click on the three dots located on the upper right corner of the screen and select the option “Hint” and it will reveal one word.</p>
+                    <h6 className={`${visAns2 ? 'visible' : 'hidden'} text-base font-medium pt-[15px]`}>Click on the three dots located on the upper right corner of the screen and select the option “Hint” and it will reveal one word.</h6>
                 </div>
             </div>
         </section>
