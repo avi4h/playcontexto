@@ -1,8 +1,8 @@
-import React from "react";
+import React from "react"
 
 export default function Faq() {
-  const [visAns1, setVisAns1] = React.useState(false);
-  const [visAns2, setVisAns2] = React.useState(false);
+  const [visAns1, setVisAns1] = React.useState(false)
+  const [visAns2, setVisAns2] = React.useState(false)
 
   return (
     <section className="flex flex-col justify-start items-center w-full mt-[10px] px-[15px] pt-[15px] pb-[10px] ">
@@ -35,5 +35,5 @@ export default function Faq() {
       </div>
 
     </section>
-  );
+  )
 }
