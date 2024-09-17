@@ -10,14 +10,15 @@ export default {
       fontFamily: {
         nunito: ["Nunito", "sans-serif"],
       },
-    },
-    colors: {
-      'con': {
-        200:'#fffefe',
-        400:'#fffbf5',
-        600:'#f4ede2',
-        900:'#423232'
-      }
+      colors: {
+        'con': {
+          100:'#ccc',
+          200:'#fffefe',
+          400:'#fffbf5',
+          600:'#f4ede2',
+          900:'#423232'
+        }
+      },
     },
   },
   plugins: [],
