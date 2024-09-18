@@ -1,40 +1,23 @@
 import React from "react"
 
-export default function Dropdown() {
+
+export default function Dropdown({ list }) {
+
+    const listElements = list.map((item, index) => {
+        return (
+            <li key={index} className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px] cursor-pointer" onClick={item.click}>
+                <img src={item.icon} alt={item.text} className="w-[15px] h-[15px] mr-[10px]" />
+                <p className=" text-base leading-none font-bold">{item.text}</p>
+            </li>
+        )
+    })
+
     return (
-        <ul className="absolute top-[37px] right-0 w-48 bg-white shadow-lg rounded-[10px] z-10 p-[10px]">
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./q-rounded.svg" alt="how to play" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">How to play</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./hint.svg" alt="hint" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Hint</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./flag.svg" alt="give up" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Give up</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./calendar.svg" alt="previous game" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Previous games</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./settings.svg" alt="settings" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Settings</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./info.svg" alt="credits" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Credits</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./message.svg" alt="feedback" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">Feedback</p>
-            </li>
-            <li className="flex justify-start items-center px-[15px] py-[10px] hover:bg-con-600 rounded-[5px]">
-                <img src="./q-square.svg" alt="faq" className="w-[15px] h-[15px] mr-[10px]" />
-                <p className=" text-base leading-none font-bold">FAQ</p>
-            </li>
-        </ul>
+        <>
+            <ul className="absolute top-[37px] right-0 w-48 bg-white shadow-lg rounded-[10px] z-10 p-[10px]">
+                {listElements}
+            </ul>
+        </>
     )
 }
+
