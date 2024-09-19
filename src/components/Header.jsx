@@ -8,7 +8,7 @@ import Feedback from "../modals/Feedback"
 import Credits from "../modals/Credits"
 import FaqDetailed from "../modals/FaqDetailed"
 
-export default function Header() {
+export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
     const list = [
         {
@@ -94,7 +94,7 @@ export default function Header() {
     const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
     const [isFeedbackOpen, setIsFeedbackOpen] = React.useState(false)
     const [isCreditsOpen, setIsCreditsOpen] = React.useState(false)
-    const [isFaqDetailedOpen, setIsFaqDetailedOpen] = React.useState(false)
+    
 
     function handleHowClick() { 
         setIsHowOpen(true) 

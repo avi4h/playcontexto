@@ -7,14 +7,16 @@ import Faq from "./components/Faq"
 import Foot from "./components/Foot"
 
 export default function App() {
+  const [isFaqDetailedOpen, setIsFaqDetailedOpen] = React.useState(false)
+  
   return (
     <main className="flex flex-col justify-center items-center max-w-[480px] sm:w-[480px] md:w-[480px] lg:w-[480px] px-[15px]">
-      <Header />
+      <Header isFaqDetailedOpen={isFaqDetailedOpen} setIsFaqDetailedOpen={setIsFaqDetailedOpen} />
       <Score game={729} guesses={0} />
       <Input />
       <How />
       <Faq />
-      <Foot />    
+      <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen}/>    
     </main>
   )
 }
