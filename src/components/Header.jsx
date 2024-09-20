@@ -128,6 +128,9 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
     function closeCreditsModal() { setIsCreditsOpen(false) }
     function closeFaqDetailedModal() { setIsFaqDetailedOpen(false) }
 
+    const [difficulty, setDifficulty] = React.useState("easy")
+    const [order, setOrder] = React.useState("similarity")
+
     return (
         <>
             <header className="grid grid-cols-12 align-center w-full p-1 mt-[80px] sm:mt-[60px] md:mt-[40px] lg:mt-[20px] relative" ref={dropdownRef}>
@@ -140,7 +143,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
             <How isOpen={isHowOpen} onClose={closeHowModal} />
             <Prev isOpen={isPrevOpen} onClose={closePrevModal}/>
-            <Settings isOpen={isSettingsOpen} onClose={closeSettingsModal} />
+            <Settings isOpen={isSettingsOpen} onClose={closeSettingsModal} difficulty={difficulty} setDifficulty={setDifficulty} order={order} setOrder={setOrder} />
             <Feedback isOpen={isFeedbackOpen} onClose={closeFeedbackModal} />
             <Credits isOpen={isCreditsOpen} onClose={closeCreditsModal} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailedModal} />

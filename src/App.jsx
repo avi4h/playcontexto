@@ -12,7 +12,7 @@ export default function App() {
   return (
     <main className="flex flex-col justify-center items-center max-w-[480px] sm:w-[480px] md:w-[480px] lg:w-[480px] px-[15px]">
       <Header isFaqDetailedOpen={isFaqDetailedOpen} setIsFaqDetailedOpen={setIsFaqDetailedOpen} />
-      <Score game={729} guesses={0} />
+      <Score game={12} guesses={0} />
       <Input />
       <How />
       <Faq />

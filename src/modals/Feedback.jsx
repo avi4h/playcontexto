@@ -20,8 +20,10 @@ export default function Feedback({ isOpen, onClose}){
                         <p className='text-base font-bold text-wrap text-left'>Fill this small form and tell us your thoughts about Contexto to help us make the game better.</p>
                         <p className='text-base font-bold text-wrap text-left'>It takes less than a minute and we don't collect any personal information.</p>
                     </div>
-                    <button className='bg-con-900 px-[18px] py-[12px] rounded-[5px] mt-[5px]'>
-                        <a href="https://forms.gle/gwjTmucbZyJhdAuG8" target="_blank" rel="noopener noreferrer" className="text-lg font-bold text-con-200">Take the Survey</a>
+                    <button 
+                        className='bg-con-900 px-[18px] py-[12px] rounded-[5px] mt-[5px]'
+                        onClick={() => window.open('https://forms.gle/gwjTmucbZyJhdAuG8', '_blank', 'noopener noreferrer')} >
+                        <span className="text-lg font-bold text-con-200">Take the Survey</span>
                     </button>
                 </div>
             </div>
