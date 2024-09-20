@@ -12,7 +12,7 @@ export default function Feedback({ isOpen, onClose}){
                     <img src="./close.svg" alt="Close" className=" w-[28px] h-[28px] " />
                 </div>
                 <div className="text-center">
-                    <div className="flex justify-start items-center ">
+                    <div className="flex justify-start items-center ml-2 ">
                         <img alt="Feedback" src="./message.svg" className="w-[20px] h-[20px] mr-[10px]" />
                         <p className=" text-xl leading-none font-black">Feedback</p>
                     </div>
