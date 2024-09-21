@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-export default function Prev({ isOpen, onClose }) {
+export default function Prev({ isOpen, onClose, prevGames, gameNum }) {
 
     const [visible, setVisible] = useState(false)
     const [animate, setAnimate] = useState(false)
@@ -18,56 +18,16 @@ export default function Prev({ isOpen, onClose }) {
 
     if (!isOpen && !visible) return null
 
-    const prevGames = [
-        {
-            game: 1,
-            day: "Fri, Sep 10"
-        },
-        {
-            game: 2,
-            day: "Thu, Sep 11"
-        },
-        {
-            game: 3,
-            day: "Wed, Sep 12"
-        },
-        {
-            game: 4,
-            day: "Tue, Sep 13"
-        },
-        {
-            game: 5,
-            day: "Mon, Sep 14"
-        },
-        {
-            game: 6,
-            day: "Sun, Sep 15"
-        },
-        {
-            game: 7,
-            day: "Sat, Sep 16"
-        },
-        {
-            game: 8,
-            day: "Fri, Sep 17"
-        },
-        {
-            game: 9,
-            day: "Thu, Sep 18"
-        },
-        {
-            game: 10,
-            day: "Wed, Sep 19"
-        },
-        {
-            game: 11,
-            day: "Tue, Sep 20"
-        }
-    ]
 
-    const prevGamesList = prevGames.map((item) => {
+    const currentIndex = prevGames.findIndex(item => item.game === gameNum)
+
+    // Slice the array up to the current game index
+    const slicedPrevGames = currentIndex !== -1 ? prevGames.slice(0, currentIndex + 1) : prevGames
+
+    const prevGamesList = slicedPrevGames.map((item) => {
         return (
             <button
+                key={item.game}
                 onClick={() => window.open('https://www.google.com/', '_blank', 'noopener noreferrer')}
                 className='bg-con-900 px-[18px] py-[12px] rounded-[5px] flex gap-3 w-full items-center cursor-pointer'>
                 <span className="text-[18px] leading-none font-bold text-con-200">#{item.game}</span>

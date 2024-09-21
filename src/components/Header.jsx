@@ -8,8 +8,9 @@ import Settings from "../modals/Settings"
 import Feedback from "../modals/Feedback"
 import Credits from "../modals/Credits"
 import FaqDetailed from "../modals/FaqDetailed"
+import Words from "../modals/Words"
 
-export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
+export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen, prevGames, gameNum}) {
 
     const list = [
         {
@@ -96,6 +97,8 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
     const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
     const [isFeedbackOpen, setIsFeedbackOpen] = React.useState(false)
     const [isCreditsOpen, setIsCreditsOpen] = React.useState(false)
+
+    const [isWordsOpen, setIsWordsOpen] = React.useState(false)
     
 
     function handleHowClick() { 
@@ -135,6 +138,8 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
     function closeCreditsModal() { setIsCreditsOpen(false) }
     function closeFaqDetailedModal() { setIsFaqDetailedOpen(false) }
 
+    function closeWordsModal() { setIsWordsOpen(false) }
+
     const [difficulty, setDifficulty] = React.useState("easy")
     const [order, setOrder] = React.useState("similarity")
 
@@ -150,11 +155,13 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
             <How isOpen={isHowOpen} onClose={closeHowModal} />
             <Give isOpen={isGiveOpen} onClose={closeGiveModal} />
-            <Prev isOpen={isPrevOpen} onClose={closePrevModal}/>
+            <Prev isOpen={isPrevOpen} onClose={closePrevModal} prevGames={prevGames} gameNum={gameNum}/>
             <Settings isOpen={isSettingsOpen} onClose={closeSettingsModal} difficulty={difficulty} setDifficulty={setDifficulty} order={order} setOrder={setOrder} />
             <Feedback isOpen={isFeedbackOpen} onClose={closeFeedbackModal} />
             <Credits isOpen={isCreditsOpen} onClose={closeCreditsModal} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailedModal} />
+
+            <Words isOpen={isWordsOpen} onClose={closeWordsModal} />   
         </>
 
     )
