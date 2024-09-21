@@ -2,6 +2,7 @@ import React from "react"
 import Dropdown from "./Dropdown"
 
 import How from "../modals/How" 
+import Give from "../modals/Give"
 import Prev from "../modals/Prev"
 import Settings from "../modals/Settings"   
 import Feedback from "../modals/Feedback"
@@ -29,7 +30,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
             icon: "./flag.svg",
             text: "Give up",
             click: function () {
-                return handleHowClick()
+                return handleGiveClick()
             }
         },
         {
@@ -90,6 +91,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
     
     const [isHowOpen, setIsHowOpen] = React.useState(false)
+    const [isGiveOpen, setIsGiveOpen] = React.useState(false)
     const [isPrevOpen, setIsPrevOpen] = React.useState(false)
     const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
     const [isFeedbackOpen, setIsFeedbackOpen] = React.useState(false)
@@ -98,6 +100,10 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
     function handleHowClick() { 
         setIsHowOpen(true) 
+        setIsOpen(false) 
+    }
+    function handleGiveClick() { 
+        setIsGiveOpen(true) 
         setIsOpen(false) 
     }
     function handlePrevClick() { 
@@ -122,6 +128,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
     }
 
     function closeHowModal() { setIsHowOpen(false) }
+    function closeGiveModal() { setIsGiveOpen(false) }
     function closePrevModal() { setIsPrevOpen(false) }
     function closeSettingsModal() { setIsSettingsOpen(false) }
     function closeFeedbackModal() { setIsFeedbackOpen(false) }
@@ -133,7 +140,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
 
     return (
         <>
-            <header className="grid grid-cols-12 align-center w-full p-1 mt-[80px] sm:mt-[60px] md:mt-[40px] lg:mt-[20px] relative" ref={dropdownRef}>
+            <header className="grid grid-cols-12 align-center w-full p-1 mb-[5px] mt-[80px] sm:mt-[60px] md:mt-[40px] lg:mt-[20px] relative" ref={dropdownRef}>
                 <h1 className="col-start-2 col-span-10 text-2xl font-black uppercase leading-normal text-center">Contexto</h1>
                 <div className={`col-start-12 col-span-1 justify-self-end self-center rounded-full hover:bg-con-600 p-[5px] cursor-pointer ${isOpen ? "bg-con-600" : ""}`} onClick={toggleDropdown}>
                     <img className=" w-[19px] h-[19px] " src='./drop.svg' alt="logo" />
@@ -142,6 +149,7 @@ export default function Header({ isFaqDetailedOpen, setIsFaqDetailedOpen}) {
             </header>
 
             <How isOpen={isHowOpen} onClose={closeHowModal} />
+            <Give isOpen={isGiveOpen} onClose={closeGiveModal} />
             <Prev isOpen={isPrevOpen} onClose={closePrevModal}/>
             <Settings isOpen={isSettingsOpen} onClose={closeSettingsModal} difficulty={difficulty} setDifficulty={setDifficulty} order={order} setOrder={setOrder} />
             <Feedback isOpen={isFeedbackOpen} onClose={closeFeedbackModal} />

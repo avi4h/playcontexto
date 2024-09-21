@@ -36,9 +36,9 @@ export default function Settings({ isOpen, onClose, difficulty, setDifficulty, o
                         <img alt="Settings" src="./settings.svg" className="w-[20px] h-[20px] mr-[10px]" />
                         <p className=" text-xl leading-none font-black">Settings</p>
                     </div>
-                    <div className="flex justify-start">
-                        <div className="flex justify-start items-start w-[174px]">
-                            <p className=' text-lg leading-none font-bold text-left'>Hints</p>
+                    <div className="flex justify-start w-full">
+                        <div className="flex justify-start items-start min-w-[90px] sm:w-min-w-[100px] md:min-w-[110px] lg:min-w-[110px]">
+                            <p className=' text-lg leading-none font-bold'>Hints</p>
                         </div>
                         <div className="flex flex-col gap-4 justify-start items-start">
                             <div className="flex flex-col justify-start items-start gap-1">
@@ -76,9 +76,9 @@ export default function Settings({ isOpen, onClose, difficulty, setDifficulty, o
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-start">
-                        <div className="flex justify-start items-start w-[114px]">
-                            <p className=' text-lg leading-none font-bold text-left'>Sort By</p>
+                    <div className="flex justify-start w-full">
+                        <div className="flex justify-start items-start min-w-[90px] sm:w-min-w-[100px] md:min-w-[110px] lg:min-w-[110px]">
+                            <p className=' text-lg leading-none font-bold'>Sort By</p>
                         </div>
                         <div className="flex flex-col gap-4 justify-start items-start">
                             <div className="flex flex-col justify-start items-start">
