@@ -6,7 +6,7 @@ export default function Input({ game, setGame }) {
     const handleKeyDown = async (event) => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
             try {
-                const response = await fetch(`https://api.allorigins.win/raw?url=https://api.contexto.me/machado/en/game/${game[0].gameNumber}/${inputValue.trim()}`, {
+                const response = await fetch(`/api/${game[0].gameNumber}/${inputValue.trim()}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
