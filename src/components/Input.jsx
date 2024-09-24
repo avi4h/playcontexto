@@ -1,36 +1,30 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 export default function Input({ game, setGame }) {
-    const [inputValue, setInputValue] = useState("")
+    const [inputValue, setInputValue] = useState("");
 
     const handleKeyDown = async (event) => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
             try {
-                const response = await fetch(`/api/${game[0].gameNumber}/${inputValue.trim()}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-    
+                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game[0].gameNumber}/${inputValue.trim()}`)}`);
+
                 if (response.ok) {
-                    const data = await response.json()
-                    const updatedGame = [...game]
+                    const data = await response.json();
+                    const updatedGame = [...game];
                     updatedGame[0].guesses.push({
                         lemma: data.lemma,
                         distance: data.distance
-                    })
-                    setGame(updatedGame)
-                    setInputValue("") // Clear the input field
+                    });
+                    setGame(updatedGame);
+                    setInputValue(""); // Clear the input field
                 } else {
-                    console.error("Error fetching data:", response.statusText)
+                    console.error("Error fetching data:", response.statusText);
                 }
             } catch (error) {
-                console.error("Error fetching data:", error)
+                console.error("Error fetching data:", error);
             }
         }
-    }
+    };
 
     return (
         <>
@@ -45,5 +39,5 @@ export default function Input({ game, setGame }) {
                 />
             </section>
         </>
-    )
+    );
 }
