@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 export default function How() {
     return (
@@ -16,3 +16,5 @@ export default function How() {
         </section>
     )
 }
+
+
