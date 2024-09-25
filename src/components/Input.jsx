@@ -1,30 +1,36 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
+import { play } from "../store/api"
 
 export default function Input({ game, setGame }) {
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = useState("")
 
     const handleKeyDown = async (event) => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
             try {
-                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game[0].gameNumber}/${inputValue.trim()}`)}`);
+                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${inputValue.trim()}`)}`);
 
                 if (response.ok) {
-                    const data = await response.json();
-                    const updatedGame = [...game];
-                    updatedGame[0].guesses.push({
+                    const data = await response.json()
+                    const updatedGame = { ...game }
+                    updatedGame.gameData[0].guessHistory.push({
                         lemma: data.lemma,
                         distance: data.distance
-                    });
-                    setGame(updatedGame);
-                    setInputValue(""); // Clear the input field
+                    })
+                    updatedGame.gameData[0].lastGuess = {
+                        lemma: data.lemma,
+                        distance: data.distance
+                    }
+                    updatedGame.gameData[0].numberOfAttempts += 1
+                    setGame(updatedGame)
+                    setInputValue("") 
                 } else {
-                    console.error("Error fetching data:", response.statusText);
+                    console.error("Error fetching data:", response.statusText)
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data:", error)
             }
         }
-    };
+    }
 
     return (
         <>
@@ -39,5 +45,5 @@ export default function Input({ game, setGame }) {
                 />
             </section>
         </>
-    );
+    )
 }

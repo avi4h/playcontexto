@@ -1,6 +1,5 @@
 import React from "react"
 
-
 export default function Dropdown({ list }) {
 
     const listElements = list.map((item, index) => {

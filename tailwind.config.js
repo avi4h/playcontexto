@@ -17,6 +17,11 @@ export default {
           400:'#fffbf5',
           600:'#f4ede2',
           900:'#423232'
+        },
+        'colo': {
+          100:'#b5e2dc', //green
+          200:'#f4da92', //yellow
+          400:'#f7c0b5'  //red
         }
       },
     },

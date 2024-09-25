@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
 export default function Words({ isOpen, onClose }) {
+
+    const gameId = 277
     
     const [visible, setVisible] = useState(false)
     const [animate, setAnimate] = useState(false)
@@ -25,9 +27,14 @@ export default function Words({ isOpen, onClose }) {
                     <img src="./close.svg" alt="Close" className=" w-[28px] h-[28px] " />
                 </div>
                 <div className="text-center">
-                    <div className="flex justify-start items-center ml-2 ">
-                        <img alt="How to Play" src="./q-rounded.svg" className="w-[20px] h-[20px] mr-[10px]" />
-                        <p className=" text-xl leading-none font-black">How to Play</p>
+                    <div className="flex justify-start items-center ml-2 pt-2">
+                        <p className=" text-base leading-none font-bold">Today's word (#<span className="text-base leading-none font-black" >{gameId}</span>) was:</p>
+                    </div>
+                    <div className="flex justify-center items-center py-[15px]">
+                        <p className=" text-xl leading-none font-black">fable</p>
+                    </div>
+                    <div className="flex justify-start items-center ml-2 pt-2">
+                        <p className=" text-base leading-none font-bold">These were the 500 closest words:</p>
                     </div>
                     <div className="flex flex-col gap-2 justify-start items-start mt-[15px] mb-[8px] ml-2">
                         <p className='text-base font-bold text-wrap text-left'>Find the secret word. You have unlimited guesses.</p>

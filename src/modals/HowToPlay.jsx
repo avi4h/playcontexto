@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-export default function How({ isOpen, onClose }) {
+export default function HowToPlay({ isOpen, onClose }) {
     
     const [visible, setVisible] = useState(false)
     const [animate, setAnimate] = useState(false)

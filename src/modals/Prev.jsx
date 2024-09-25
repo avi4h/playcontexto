@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
+import { getInitialTime, getCurrentTime, getTodaysGameId } from '../store/utils'
 
-export default function Prev({ isOpen, onClose, prevGames, gameNum }) {
+export default function Prev({ isOpen, onClose, gameData /*onSelectGame*/}) {
 
     const [visible, setVisible] = useState(false)
     const [animate, setAnimate] = useState(false)
@@ -12,26 +13,72 @@ export default function Prev({ isOpen, onClose, prevGames, gameNum }) {
             setTimeout(() => setAnimate(true), 30)
         } else {
             setAnimate(false)
-            setTimeout(() => setVisible(false), 150) 
+            setTimeout(() => setVisible(false), 150)
         }
     }, [isOpen])
 
     if (!isOpen && !visible) return null
 
+    const today = getCurrentTime()
+    const firstDay = getInitialTime()
+    const todaysGameId = getTodaysGameId()
 
-    const currentIndex = prevGames.findIndex(item => item.game === gameNum)
+    const numberOfDays = today.diff(firstDay, 'days') + 1
 
-    // Slice the array up to the current game index
-    const slicedPrevGames = currentIndex !== -1 ? prevGames.slice(0, currentIndex + 1) : prevGames
+    const prevGames = [...Array(numberOfDays)].map((_, i) => ({
+        date: today.subtract(i, 'day'),
+        gameId: todaysGameId - i 
+    }))
 
-    const prevGamesList = slicedPrevGames.map((item) => {
+    const getGameStatus = (gameId) => {
+        if (gameData.find((game) => game.gameId === gameId) === undefined) {
+            return ''
+        }
+
+        const targetIndex = gameData.findIndex((game) => game.gameId === gameId)
+
+        if (gameData[targetIndex].foundWord) {
+            return 'Got it'
+        }
+
+        if (gameData[targetIndex].gaveUp) {
+            return 'Gave up'
+        }
+
+        if (
+            !gameData[targetIndex].gaveUp &&
+            !gameData[targetIndex].foundWord &&
+            gameData[targetIndex].numberOfAttempts > 0
+        ) {
+            return 'In progress'
+        }
+
+        return ''
+    }
+
+    const randomGames = prevGames.filter(
+        (option) =>
+            getGameStatus(option.gameId) === '' && option.gameId !== todaysGameId
+    )
+
+    const selectRandomGame = () => {
+        const selectedIndex = Math.floor(Math.random() * randomGames.length)
+        const selectedGameId = randomGames[selectedIndex].gameId
+        //onSelectGame(selectedGameId, true)
+    }
+
+    let dateFormat = 'ddd, MMM D'
+
+    const prevGamesList = prevGames.map((item) => {
         return (
             <button
-                key={item.game}
-                onClick={() => window.open('https://www.google.com/', '_blank', 'noopener noreferrer')}
+                type="button"
+                key={item.gameId}
+                onClick={() => console.log("clicked") /*() => onSelectGame(item.gameId)*/}
                 className='bg-con-900 px-[18px] py-[12px] rounded-[5px] flex gap-3 w-full items-center cursor-pointer'>
-                <span className="text-[18px] leading-none font-bold text-con-200">#{item.game}</span>
-                <span className="text-[14px] leading-none font-bold text-con-200">{item.day}</span>
+                <span className="text-[18px] leading-none font-bold text-con-200">#{item.gameId}</span>
+                <span className="text-[14px] leading-none font-bold text-con-200 ">{item.date.format(dateFormat)}</span>
+                <span className="text-[18px] leading-none font-bold text-con-200 ml-auto">{getGameStatus(item.gameId)}</span>
             </button>
         )
     })
@@ -47,12 +94,12 @@ export default function Prev({ isOpen, onClose, prevGames, gameNum }) {
                         <p className='text-base font-bold text-wrap text-left'>Select a previous game to play:</p>
                     </div>
                     <button
-                        onClick={() => window.open('https://www.google.com/', '_blank', 'noopener noreferrer')}
+                        onClick={() => console.log("clicked") /*selectRandomGame*/}
                         className='bg-con-900 px-[18px] py-[10px] rounded-[5px] mt-[15px] flex justify-center items-center mx-auto cursor-pointer'>
                         <img alt="random" src="./random.svg" className="w-[15px] h-[15px] mr-[10px] invert" />
                         <span className="text-lg leading-normal font-bold text-con-200">Random</span>
                     </button>
-                    <div className="flex flex-col-reverse gap-[10px] justify-start items-start m-[15px]">
+                    <div className="flex flex-col gap-[10px] justify-start items-start m-[15px]">
                         {prevGamesList}
                     </div>
                 </div>

@@ -1,9 +1,0 @@
-https://api.contexto.me/machado/en/game/731/
-https://api.contexto.me/machado/en/game/734/rock
-
-https://api.contexto.me/machado/en/tip/734/1
-
-https://api.contexto.me/machado/en/giveup/732
-
-
-https://api.contexto.me/machado/en/top/732

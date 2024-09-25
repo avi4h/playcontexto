@@ -105,7 +105,7 @@ export default function Settings({ isOpen, onClose, difficulty, setDifficulty, o
                     </div>
                 </div>
             </div>
-        </div >,
+        </div>,
         document.getElementById('modal-root')
     )
 }
