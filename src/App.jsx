@@ -136,46 +136,44 @@ export default function App() {
     }, [game])
 
 
-    const onSelectGame = (newGameId, random = false) => {
-        let newGame = { ...game }
-        newGame.openGameId = newGameId
+    const onSelectGame = (newGameId) => {
+        setGame((prevGame) => {
+            let newGame = { ...prevGame }
+            newGame.openGameId = newGameId
 
-        const indi = newGame.gameData.findIndex((game) => game.gameId === newGameId)
+            const indi = newGame.gameData.findIndex((game) => game.gameId === newGameId)
 
-        if (indi === -1) {
-            newGame.gameData.unshift(
-                {
-                    gameId: newGameId,
-                    foundWord: "",
-                    gaveUp: "",
-                    guessHistory: [],
-                    lastGuess: [],
-                    numberOfAttempts: 0,
-                    numberOfTips: 0
-                }
-            )
-            newGame.stage = 1
-        }
-        else {
-            let temp = newGame.gameData[indi]
-            newGame.gameData[indi] = newGame.gameData[0]
-            newGame.gameData[0] = temp
-            if (newGame.gameData[0].guessHistory.length === 0) {
+            if (indi === -1) {
+                newGame.gameData = [
+                    {
+                        gameId: newGameId,
+                        foundWord: "",
+                        gaveUp: "",
+                        guessHistory: [],
+                        lastGuess: [],
+                        numberOfAttempts: 0,
+                        numberOfTips: 0
+                    },
+                    ...newGame.gameData
+                ]
                 newGame.stage = 1
+            } else {
+                let temp = newGame.gameData[indi]
+                newGame.gameData[indi] = newGame.gameData[0]
+                newGame.gameData[0] = temp
+                if (newGame.gameData[0].guessHistory.length === 0) {
+                    newGame.stage = 1
+                } else if (newGame.gameData[0].foundWord) {
+                    newGame.stage = 4
+                } else if (newGame.gameData[0].gaveUp) {
+                    newGame.stage = 3
+                } else {
+                    newGame.stage = 2
+                }
             }
-            else if (newGame.gameData[0].foundWord !== "") {
-                newGame.stage = 4
-            }
-            else if (newGame.gameData[0].gaveUp !== "") {
-                newGame.stage = 3
-            }
-            else {
-                newGame.stage = 2
-            }
-        }
-        setGame(newGame)
+            return newGame
+        })
     }
-
 
     const getGiveUp = async (newGameId) => {
         try {

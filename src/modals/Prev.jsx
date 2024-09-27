@@ -61,12 +61,12 @@ export default function Prev({ isOpen, onClose, gameData, onSelectGame}) {
     const selectRandomGame = () => {
         const selectedIndex = Math.floor(Math.random() * randomGames.length)
         const selectedGameId = randomGames[selectedIndex].gameId
-        onSelectGame(selectedGameId, true)
+        onSelectGame(selectedGameId)
         onClose()
     }
 
     const selectGame = (selectedGameId) => {
-        onSelectGame(selectedGameId, true)
+        onSelectGame(selectedGameId)
         onClose()
     }
 
