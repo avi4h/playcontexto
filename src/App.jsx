@@ -6,6 +6,8 @@ import Input from "./components/Input"
 import How from "./components/How"
 import Faq from "./components/Faq"
 import Foot from "./components/Foot"
+import GaveUp from './components/GaveUp'
+import Won from './components/Won'
 
 import GiveUp from "./modals/GiveUp"
 import Prev from "./modals/Prev"
@@ -16,18 +18,17 @@ import FaqDetailed from "./modals/FaqDetailed"
 import HowToPlay from "./modals/HowToPlay"
 import Words from "./modals/Words"
 
-import {getTodaysGameId} from './store/utils'
+import { getTodaysGameId, randomTipDistance, nextTipDistance, halfTipDistance } from './store/utils'
 
 export default function App() {
-    
+
     const [difficulty, setDifficulty] = useState("easy")
     const [order, setOrder] = useState("similarity")
 
     const [game, setGame] = useState({
         gameData: [],
-        lastGameId: null,
-        openGameId: null,
-        tipSetting: difficulty
+        stage: 0,
+        openGameId: null
     })
 
     const list = [
@@ -42,7 +43,7 @@ export default function App() {
             icon: "./hint.svg",
             text: "Hint",
             click: function () {
-                return handleHowToPlayClick()
+                return handleHintClick()
             }
         },
         {
@@ -115,16 +116,15 @@ export default function App() {
                         gameId: todaysGameId,
                         foundWord: "",
                         gaveUp: "",
-                        stage: 0,
                         guessHistory: [],
                         lastGuess: [],
                         numberOfAttempts: 0,
                         numberOfTips: 0
                     }
                 ],
-                lastGameId: todaysGameId,
-                openGameId: todaysGameId,
-                tipSetting: difficulty
+                stage: 0,
+                openGameId: todaysGameId
+
             })
         }
     }, [todaysGameId])
@@ -136,33 +136,126 @@ export default function App() {
     }, [game])
 
 
-    function handleHowToPlayClick() { 
-        setIsHowToPlayOpen(true) 
-        setIsDropdownOpen(false) 
+    const onSelectGame = (newGameId, random = false) => {
+        let newGame = { ...game }
+        newGame.openGameId = newGameId
+
+        const indi = newGame.gameData.findIndex((game) => game.gameId === newGameId)
+
+        if (indi === -1) {
+            newGame.gameData.unshift(
+                {
+                    gameId: newGameId,
+                    foundWord: "",
+                    gaveUp: "",
+                    guessHistory: [],
+                    lastGuess: [],
+                    numberOfAttempts: 0,
+                    numberOfTips: 0
+                }
+            )
+            newGame.stage = 1
+        }
+        else {
+            let temp = newGame.gameData[indi]
+            newGame.gameData[indi] = newGame.gameData[0]
+            newGame.gameData[0] = temp
+            if (newGame.gameData[0].guessHistory.length === 0) {
+                newGame.stage = 1
+            }
+            else if (newGame.gameData[0].foundWord !== "") {
+                newGame.stage = 4
+            }
+            else if (newGame.gameData[0].gaveUp !== "") {
+                newGame.stage = 3
+            }
+            else {
+                newGame.stage = 2
+            }
+        }
+        setGame(newGame)
     }
-    function handleGiveUpClick() { 
-        setIsGiveUpOpen(true) 
-        setIsDropdownOpen(false) 
+
+
+    const getGiveUp = async (newGameId) => {
+        try {
+            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
+            if (response.ok) {
+                const data = await response.json()
+                return { lemma: data.lemma, distance: data.distance}
+            } else {
+                console.error("Error fetching data:", response.error)
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error)
+        }
     }
-    function handlePrevClick() { 
-        setIsPrevOpen(true) 
-        setIsDropdownOpen(false)  
+    const handleGiveUpYesClick = () => {
+        setIsGiveUpOpen(false)
+        getGiveUp(game.openGameId)
+            .then((data) => {
+                const updatedGame = { ...game }
+                updatedGame.gameData[0].gaveUp = data.lemma
+                updatedGame.stage = 3
+                setGame(updatedGame)
+            })
     }
-    function handleSettingsClick() { 
-        setIsSettingsOpen(true)  
-        setIsDropdownOpen(false) 
+
+    const getHint = async (gameId, distance) => {
+        try {
+            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
+            if (response.ok) {
+                const data = await response.json()
+                return { lemma: data.lemma, distance: data.distance}
+            } else {
+                console.error("Error fetching data:", response.error)
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error)
+        }
     }
-    function handleFeedbackClick() { 
-        setIsFeedbackOpen(true)  
-        setIsDropdownOpen(false) 
+    function handleHintClick() {
+        setIsDropdownOpen(false)
+        const distance = difficulty === "easy" ? halfTipDistance(game.gameData[0].guessHistory) :
+            difficulty === "medium" ? nextTipDistance(game.gameData[0].guessHistory) :
+                randomTipDistance(game.gameData[0].guessHistory)
+        getHint(game.openGameId, distance)
+            .then((data) => {
+                const updatedGame = { ...game }
+                updatedGame.gameData[0].guessHistory.push(data)
+                updatedGame.gameData[0].lastGuess = data
+                updatedGame.gameData[0].numberOfTips += 1
+                setGame(updatedGame)
+            })
     }
-    function handleCreditsClick() { 
-        setIsCreditsOpen(true)  
-        setIsDropdownOpen(false) 
+
+    function handleHowToPlayClick() {
+        setIsHowToPlayOpen(true)
+        setIsDropdownOpen(false)
     }
-    function handleFaqDetailedClick() { 
-        setIsFaqDetailedOpen(true)  
-        setIsDropdownOpen(false) 
+    function handleGiveUpClick() {
+        setIsGiveUpOpen(true)
+        setIsDropdownOpen(false)
+    }
+    function handlePrevClick() {
+        setIsPrevOpen(true)
+        setIsDropdownOpen(false)
+    }
+    function handleSettingsClick() {
+        setIsSettingsOpen(true)
+        setIsDropdownOpen(false)
+    }
+    function handleFeedbackClick() {
+        setIsFeedbackOpen(true)
+        setIsDropdownOpen(false)
+    }
+    function handleCreditsClick() {
+        setIsCreditsOpen(true)
+        setIsDropdownOpen(false)
+    }
+    function handleFaqDetailedClick() {
+        setIsFaqDetailedOpen(true)
+        setIsDropdownOpen(false)
     }
 
     function closeHowToPlayModal() { setIsHowToPlayOpen(false) }
@@ -176,25 +269,29 @@ export default function App() {
 
     return (
         <main className="flex flex-col justify-center items-center max-w-[480px] sm:w-[480px] md:w-[480px] lg:w-[480px] px-[15px]">
-            <Header list={list} isDropdownOpen={isDropdownOpen} setIsDropdownOpen={setIsDropdownOpen}/>
-            {game.gameData.length > 0 && (
+            <Header list={list} isDropdownOpen={isDropdownOpen} setIsDropdownOpen={setIsDropdownOpen} stage={game.stage} />
+            { 
+                game.gameData.length > 0 && (
                 <>
+                    { game.stage === 3 && <GaveUp game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
+                    { game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
                     <Score game={game.gameData[0].gameId} guesses={game.gameData[0].numberOfAttempts} hints={game.gameData[0].numberOfTips} />
                     <Input game={game} setGame={setGame} />
-                    {game.gameData[0].stage===0 && <How />}
-                    {game.gameData[0].stage===0 && <Faq />}
-                    {game.gameData[0].stage===0 && <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} />}
+                    { game.stage === 0 && <How /> }
+                    { game.stage === 0 && <Faq /> }
+                    { game.stage === 0 && <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} /> }
                 </>
             )}
+            
 
             <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlayModal} />
-            <GiveUp isOpen={isGiveUpOpen} onClose={closeGiveUpModal} />
-            <Prev isOpen={isPrevOpen} onClose={closePrevModal} gameData={game.gameData} /*onSelectGame={onSelectGame}*//>
+            <GiveUp isOpen={isGiveUpOpen} onClose={closeGiveUpModal} yesGiveUp={handleGiveUpYesClick} />
+            <Prev isOpen={isPrevOpen} onClose={closePrevModal} gameData={game.gameData} onSelectGame={onSelectGame} />
             <Settings isOpen={isSettingsOpen} onClose={closeSettingsModal} difficulty={difficulty} setDifficulty={setDifficulty} order={order} setOrder={setOrder} />
             <Feedback isOpen={isFeedbackOpen} onClose={closeFeedbackModal} />
             <Credits isOpen={isCreditsOpen} onClose={closeCreditsModal} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailedModal} />
-            <Words isOpen={isWordsOpen} onClose={closeWordsModal}/>   
+            <Words isOpen={isWordsOpen} onClose={closeWordsModal} gameId={game.openGameId}/>
         </main>
     )
 }

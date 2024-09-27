@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 .loading-text span {
+    font-family: 'Nunito', sans-serif;
+    color:#423232;
     position: relative;
     display: inline-block;
-    animation: waviy 2s infinite;
+    animation: waviy 1300ms infinite;
     animation-delay: calc(0.05s * var(--i));
 }
 

@@ -1,7 +1,7 @@
 import React from "react"
 import Dropdown from "./Dropdown"
 
-export default function Header({ isDropdownOpen, setIsDropdownOpen, list }) {
+export default function Header({ isDropdownOpen, setIsDropdownOpen, list, stage }) {
 
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen)
 
@@ -29,7 +29,7 @@ export default function Header({ isDropdownOpen, setIsDropdownOpen, list }) {
                 <div className={`col-start-12 col-span-1 justify-self-end self-center rounded-full hover:bg-con-600 p-[5px] cursor-pointer ${isDropdownOpen ? "bg-con-600" : ""}`} onClick={toggleDropdown}>
                     <img className=" w-[19px] h-[19px] " src='./drop.svg' alt="logo" />
                 </div>
-                { isDropdownOpen && <Dropdown list={list} />}
+                { isDropdownOpen && <Dropdown list={list} stage={stage} setIsDropdownOpen={setIsDropdownOpen}/>}
             </header>
         </>
     )

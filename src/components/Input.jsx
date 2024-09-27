@@ -1,6 +1,4 @@
 import React, { useState } from "react"
-import { play } from "../store/api"
-
 export default function Input({ game, setGame }) {
     const [inputValue, setInputValue] = useState("")
 
@@ -21,6 +19,13 @@ export default function Input({ game, setGame }) {
                         distance: data.distance
                     }
                     updatedGame.gameData[0].numberOfAttempts += 1
+                    if(data.distance === 0){
+                        updatedGame.stage = 4
+                        updatedGame.gameData[0].foundWord = data.lemma
+                    }
+                    else{
+                        updatedGame.stage = 2
+                    }
                     setGame(updatedGame)
                     setInputValue("") 
                 } else {
@@ -37,6 +42,7 @@ export default function Input({ game, setGame }) {
             <section className="flex justify-start items-center w-full my-[10px]">
                 <input
                     type="text"
+                    id="input"
                     className="bg-con-200 border-solid border-[1px] border-slate-900 w-full px-[15px] py-[10px] rounded-[5px] text-[22.5px] font-bold placeholder:text-slate-500 placeholder:text-[22.5px] placeholder:font-bold"
                     placeholder="type a word"
                     value={inputValue}

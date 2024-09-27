@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
-export default function GiveUp({ isOpen, onClose }) {
+export default function GiveUp({ isOpen, onClose, yesGiveUp }) {
 
     const [visible, setVisible] = useState(false)
     const [animate, setAnimate] = useState(false)
@@ -31,7 +31,7 @@ export default function GiveUp({ isOpen, onClose }) {
                     <div className="flex gap-4 justify-center items-center mt-6">
                         <button
                             className='bg-con-900 px-[20px] pt-[8px] pb-[5px] rounded-[5px]'
-                            onClick={() => window.open('https://forms.gle/gwjTmucbZyJhdAuG8', '_blank', 'noopener noreferrer')} >
+                            onClick={yesGiveUp} >
                             <span className="text-xl font-bold leading-none text-con-200">Yes</span>
                         </button>
                         <button
