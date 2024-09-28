@@ -7,7 +7,11 @@ export default function Rank({ gameData }) {
     let curr = null
     if (gameData && gameData.guessHistory) {
         curr = gameData.lastGuess[0].distance
-        words = gameData.guessHistory.sort((a, b) => a.distance - b.distance);
+        if (gameData.postGame) {
+            words = [...gameData.guessHistory, ...gameData.postGame].sort((a, b) => a.distance - b.distance)
+        } else {
+            words = gameData.guessHistory.sort((a, b) => a.distance - b.distance)
+        }
     }
 
     return (
@@ -16,8 +20,8 @@ export default function Rank({ gameData }) {
                 words.map((word) => {
                     let highlight = curr === word.distance  
                     return (
-                        <div className={`relative w-full h-[40px] flex items-center justify-between ${highlight ? 'border-[3px] border-con-900 rounded-[8px]' : 'rounded-[5px]'}`} key={word.lemma}>
-                            <div className="absolute w-full h-full bg-con-600 rounded-[5px]">
+                        <div className={`relative w-full h-[42px] flex items-center justify-between`} key={word.lemma}>
+                            <div className={`absolute w-full h-full bg-con-600 rounded-[8px] ${highlight ? 'border-[3px] border-con-900' : ''}`}>
                                 <div
                                     className={`min-w-[1%] h-full rounded-[5px] ${getBarColor(word.distance)} `}
                                     style={{
@@ -26,8 +30,8 @@ export default function Rank({ gameData }) {
                                 />
                             </div>
                             <div className="relative w-full flex items-center justify-between">
-                                <span className='font-bold p-3 text-lg leading-none'>{word.lemma}</span>
-                                <span className='font-bold p-3 text-lg leading-none'>{word.distance + 1}</span>
+                                <span className={`${highlight ? 'font-black' : 'font-bold'} px-3 text-lg leading-none`}>{word.lemma}</span>
+                                <span className={`${highlight ? 'font-black' : 'font-bold'} px-3 text-lg leading-none`}>{word.distance + 1}</span>
                             </div>
                         </div>
                     )

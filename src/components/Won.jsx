@@ -110,7 +110,9 @@ export default function Won({ setIsPrevOpen, setIsWordsOpen, game }) {
                 <p className='text-lg font-bold text-wrap leading-[1.2] text-center mb-[5px]'>
                     {`in `}
                     <span className='font-black'>{attempts}</span>
-                    {` ${guessText}${tips > 0 ? ` and ${tips} ${tipText}` : ''}.`}
+                    {` ${guessText}${tips > 0 ? ` and ` : ''}`}
+                    {tips > 0 && <span className='font-black'>{tips}</span>}
+                    {tips > 0 && ` ${tipText}.`}
                 </p>
                 <div className='text-lg font-bold text-wrap text-left my-[15px] whitespace-pre'>{getChart(guesses)}</div>
                 <button

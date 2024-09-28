@@ -50,7 +50,7 @@ export default function Words({ isOpen, onClose , gameId}) {
                 </div>
                 {
                     loading ? (
-                        <div className="loading-text ml-auto mr-auto p-8">
+                        <div className="loading-text ml-auto mr-auto p-4">
                             <span className='font-bold text-con-900 text-lg' style={{ '--i': 1 }}>L</span>
                             <span className='font-bold text-con-900 text-lg' style={{ '--i': 2 }}>o</span>
                             <span className='font-bold text-con-900 text-lg' style={{ '--i': 3 }}>a</span>
@@ -76,9 +76,8 @@ export default function Words({ isOpen, onClose , gameId}) {
                             <div className="flex flex-col gap-[7px] justify-start items-start">
                                 { words.length > 0 &&
                                     words.map((word, distance) => {
-                                        let highlight = false
                                         return (
-                                            <div className={`relative w-full h-[35px] flex items-center justify-between rounded-[5px] ${highlight ? 'bg-gray-200' : ''}`} key={word}>
+                                            <div className={`relative w-full h-[35px] flex items-center justify-between rounded-[5px]`} key={word}>
                                                 <div className="absolute w-full h-full bg-con-600 rounded-[5px]">
                                                     <div
                                                         className={`min-w-[1%] h-full rounded-[5px] ${getBarColor(distance)} `}

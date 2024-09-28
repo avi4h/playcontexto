@@ -9,6 +9,7 @@ import Foot from "./components/Foot"
 import GaveUp from './components/GaveUp'
 import Won from './components/Won'
 import Rank from "./components/Rank"
+import End from "./components/End"
 
 import GiveUp from "./modals/GiveUp"
 import Prev from "./modals/Prev"
@@ -23,8 +24,14 @@ import { getTodaysGameId, randomTipDistance, nextTipDistance, halfTipDistance } 
 
 export default function App() {
 
+    const [showInitialContent, setShowInitialContent] = useState(() => {
+        const saved = localStorage.getItem('showInitialContent')
+        return saved === null ? true : JSON.parse(saved)
+    })
     const [difficulty, setDifficulty] = useState("easy")
     const [order, setOrder] = useState("similarity")
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
 
     const [game, setGame] = useState({
         gameData: [],
@@ -105,6 +112,12 @@ export default function App() {
     const todaysGameId = getTodaysGameId()
 
     useEffect(() => {
+        if (loading) {
+            setShowInitialContent(false)
+            localStorage.setItem('showInitialContent', JSON.stringify(false))
+        }
+    }, [loading])
+    useEffect(() => {
         const storedGame = localStorage.getItem('game')
 
         const gotGame = JSON.parse(storedGame)
@@ -120,7 +133,8 @@ export default function App() {
                 guessHistory: [],
                 lastGuess: [],
                 numberOfAttempts: 0,
-                numberOfTips: 0
+                numberOfTips: 0,
+                postGame: []
             })
             gotGame.openGameId = todaysGameId
             gotGame.stage = 0
@@ -137,7 +151,8 @@ export default function App() {
                         guessHistory: [],
                         lastGuess: [],
                         numberOfAttempts: 0,
-                        numberOfTips: 0
+                        numberOfTips: 0,
+                        postGame: []
                     }
                 ],
                 stage: 0,
@@ -146,13 +161,11 @@ export default function App() {
             })
         }
     }, [todaysGameId])
-
     useEffect(() => {
         if (game.gameData.length > 0) {
             localStorage.setItem('game', JSON.stringify(game))
         }
     }, [game])
-
 
     const onSelectGame = (newGameId) => {
         setGame((prevGame) => {
@@ -170,7 +183,8 @@ export default function App() {
                         guessHistory: [],
                         lastGuess: [],
                         numberOfAttempts: 0,
-                        numberOfTips: 0
+                        numberOfTips: 0,
+                        postGame: []
                     },
                     ...newGame.gameData
                 ]
@@ -194,57 +208,59 @@ export default function App() {
     }
 
     const getGiveUp = async (newGameId) => {
-        try {
-            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
-            if (response.ok) {
-                const data = await response.json()
-                return { lemma: data.lemma, distance: data.distance }
-            } else {
-                console.error("Error fetching data:", response.error)
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error)
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
+        if (response.ok) {
+            const data = await response.json()
+            return { lemma: data.lemma, distance: data.distance }
         }
     }
     const handleGiveUpYesClick = () => {
         setIsGiveUpOpen(false)
+        setLoading(true)
         getGiveUp(game.openGameId)
             .then((data) => {
+                setError(null)
                 const updatedGame = { ...game }
                 updatedGame.gameData[0].gaveUp = data.lemma
-                updatedGame.gameData[0].guessHistory.push(data)
+                updatedGame.gameData[0].postGame.push(data)
                 updatedGame.gameData[0].lastGuess = [data]
                 updatedGame.stage = 3
                 setGame(updatedGame)
+                setLoading(false)
+            })
+            .catch((error) => {
+                setError({ error: "Error fetching the top word, please try again" })
+                setLoading(false)
             })
     }
 
     const getHint = async (gameId, distance) => {
-        try {
-            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
-            if (response.ok) {
-                const data = await response.json()
-                return { lemma: data.lemma, distance: data.distance }
-            } else {
-                console.error("Error fetching data:", response.error)
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error)
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
+        if (response.ok) {
+            const data = await response.json()
+            return { lemma: data.lemma, distance: data.distance }
         }
     }
     function handleHintClick() {
         setIsDropdownOpen(false)
+        setLoading(true)
         const distance = difficulty === "easy" ? halfTipDistance(game.gameData[0].guessHistory) :
             difficulty === "medium" ? nextTipDistance(game.gameData[0].guessHistory) :
                 randomTipDistance(game.gameData[0].guessHistory)
         getHint(game.openGameId, distance)
             .then((data) => {
+                setError(null)
                 const updatedGame = { ...game }
                 updatedGame.gameData[0].guessHistory.push(data)
                 updatedGame.gameData[0].lastGuess = [data]
                 updatedGame.gameData[0].numberOfTips += 1
                 updatedGame.stage = 2
                 setGame(updatedGame)
+                setLoading(false)
+            })
+            .catch((error) => {
+                setError({ error: "Error fetching the hint, please try again" })
+                setLoading(false)
             })
     }
 
@@ -292,17 +308,18 @@ export default function App() {
             {
                 game.gameData.length > 0 && (
                     <>
-                        {game.stage === 3 && <GaveUp game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} />}
-                        {game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} />}
+                        { game.stage === 3 && <GaveUp game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
+                        { game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
                         <Score game={game.gameData[0].gameId} guesses={game.gameData[0].numberOfAttempts} hints={game.gameData[0].numberOfTips} />
-                        <Input game={game} setGame={setGame} />
-                        {game.stage > 1 && <Rank gameData={game.gameData[0]} />}
-                        {game.stage === 0 && <How />}
-                        {game.stage === 0 && <Faq />}
-                        <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} stage={game.stage} />
+                        <Input game={game} setGame={setGame} loading={loading} error={error} setLoading={setLoading} setError={setError} />
+                        { game.stage > 1 && <Rank gameData={game.gameData[0]} /> }
+                        { showInitialContent && game.stage === 0 && <How /> }
+                        { showInitialContent && game.stage === 0 && <Faq /> }
+                        { showInitialContent && game.stage === 0 && <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} stage={game.stage} /> }
+                        <End />
                     </>
-                )}
-
+                )
+            }
 
             <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlayModal} />
             <GiveUp isOpen={isGiveUpOpen} onClose={closeGiveUpModal} yesGiveUp={handleGiveUpYesClick} />
@@ -312,6 +329,7 @@ export default function App() {
             <Credits isOpen={isCreditsOpen} onClose={closeCreditsModal} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailedModal} />
             <Words isOpen={isWordsOpen} onClose={closeWordsModal} gameId={game.openGameId} />
+        
         </main>
     )
 }
