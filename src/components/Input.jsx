@@ -5,31 +5,40 @@ export default function Input({ game, setGame }) {
     const handleKeyDown = async (event) => {
         if (event.key === "Enter" && inputValue.trim() !== "") {
             try {
-                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${inputValue.trim()}`)}`);
 
-                if (response.ok) {
-                    const data = await response.json()
-                    const updatedGame = { ...game }
-                    updatedGame.gameData[0].guessHistory.push({
-                        lemma: data.lemma,
-                        distance: data.distance
-                    })
-                    updatedGame.gameData[0].lastGuess = {
-                        lemma: data.lemma,
-                        distance: data.distance
+                if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.lemma === inputValue.trim()) !== -1) {
+                    setInputValue("")
+                }
+                else {
+                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${inputValue.trim()}`)}`);
+
+                    if (response.ok) {
+                        const data = await response.json()
+                        const word = {
+                            lemma: data.lemma,
+                            distance: data.distance
+                        }
+                        if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.lemma === word.lemma) !== -1) {
+                            setInputValue("")
+                        } 
+                        else {
+                            const updatedGame = { ...game }
+                            updatedGame.gameData[0].guessHistory.push(word)
+                            updatedGame.gameData[0].lastGuess = [word]
+                            updatedGame.gameData[0].numberOfAttempts += 1
+                            if (data.distance === 0) {
+                                updatedGame.stage = 4
+                                updatedGame.gameData[0].foundWord = data.lemma
+                            }
+                            else {
+                                updatedGame.stage = 2
+                            }
+                            setGame(updatedGame)
+                            setInputValue("")
+                        }
+                    } else {
+                        console.error("Error fetching data:", response.statusText)
                     }
-                    updatedGame.gameData[0].numberOfAttempts += 1
-                    if(data.distance === 0){
-                        updatedGame.stage = 4
-                        updatedGame.gameData[0].foundWord = data.lemma
-                    }
-                    else{
-                        updatedGame.stage = 2
-                    }
-                    setGame(updatedGame)
-                    setInputValue("") 
-                } else {
-                    console.error("Error fetching data:", response.statusText)
                 }
             } catch (error) {
                 console.error("Error fetching data:", error)

@@ -8,6 +8,7 @@ import Faq from "./components/Faq"
 import Foot from "./components/Foot"
 import GaveUp from './components/GaveUp'
 import Won from './components/Won'
+import Rank from "./components/Rank"
 
 import GiveUp from "./modals/GiveUp"
 import Prev from "./modals/Prev"
@@ -106,8 +107,25 @@ export default function App() {
     useEffect(() => {
         const storedGame = localStorage.getItem('game')
 
-        if (storedGame) {
-            setGame(JSON.parse(storedGame))
+        const gotGame = JSON.parse(storedGame)
+
+        if (storedGame && gotGame.gameData.findIndex((currGame) => currGame.gameId === todaysGameId && (currGame.foundWord || currGame.gaveUp)) !== -1) {
+            setGame(gotGame)
+        }
+        else if (storedGame && gotGame.gameData.findIndex((currGame) => currGame.gameId === todaysGameId) === -1) {
+            gotGame.gameData.unshift({
+                gameId: todaysGameId,
+                foundWord: "",
+                gaveUp: "",
+                guessHistory: [],
+                lastGuess: [],
+                numberOfAttempts: 0,
+                numberOfTips: 0
+            })
+            gotGame.openGameId = todaysGameId
+            gotGame.stage = 0
+
+            setGame(gotGame)
         }
         else {
             setGame({
@@ -180,7 +198,7 @@ export default function App() {
             const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
             if (response.ok) {
                 const data = await response.json()
-                return { lemma: data.lemma, distance: data.distance}
+                return { lemma: data.lemma, distance: data.distance }
             } else {
                 console.error("Error fetching data:", response.error)
             }
@@ -194,6 +212,8 @@ export default function App() {
             .then((data) => {
                 const updatedGame = { ...game }
                 updatedGame.gameData[0].gaveUp = data.lemma
+                updatedGame.gameData[0].guessHistory.push(data)
+                updatedGame.gameData[0].lastGuess = [data]
                 updatedGame.stage = 3
                 setGame(updatedGame)
             })
@@ -204,7 +224,7 @@ export default function App() {
             const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
             if (response.ok) {
                 const data = await response.json()
-                return { lemma: data.lemma, distance: data.distance}
+                return { lemma: data.lemma, distance: data.distance }
             } else {
                 console.error("Error fetching data:", response.error)
             }
@@ -221,8 +241,9 @@ export default function App() {
             .then((data) => {
                 const updatedGame = { ...game }
                 updatedGame.gameData[0].guessHistory.push(data)
-                updatedGame.gameData[0].lastGuess = data
+                updatedGame.gameData[0].lastGuess = [data]
                 updatedGame.gameData[0].numberOfTips += 1
+                updatedGame.stage = 2
                 setGame(updatedGame)
             })
     }
@@ -268,19 +289,20 @@ export default function App() {
     return (
         <main className="flex flex-col justify-center items-center max-w-[480px] sm:w-[480px] md:w-[480px] lg:w-[480px] px-[15px]">
             <Header list={list} isDropdownOpen={isDropdownOpen} setIsDropdownOpen={setIsDropdownOpen} stage={game.stage} />
-            { 
+            {
                 game.gameData.length > 0 && (
-                <>
-                    { game.stage === 3 && <GaveUp game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
-                    { game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
-                    <Score game={game.gameData[0].gameId} guesses={game.gameData[0].numberOfAttempts} hints={game.gameData[0].numberOfTips} />
-                    <Input game={game} setGame={setGame} />
-                    { game.stage === 0 && <How /> }
-                    { game.stage === 0 && <Faq /> }
-                    { game.stage === 0 && <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} /> }
-                </>
-            )}
-            
+                    <>
+                        {game.stage === 3 && <GaveUp game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} />}
+                        {game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} />}
+                        <Score game={game.gameData[0].gameId} guesses={game.gameData[0].numberOfAttempts} hints={game.gameData[0].numberOfTips} />
+                        <Input game={game} setGame={setGame} />
+                        {game.stage > 1 && <Rank gameData={game.gameData[0]} />}
+                        {game.stage === 0 && <How />}
+                        {game.stage === 0 && <Faq />}
+                        <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} stage={game.stage} />
+                    </>
+                )}
+
 
             <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlayModal} />
             <GiveUp isOpen={isGiveUpOpen} onClose={closeGiveUpModal} yesGiveUp={handleGiveUpYesClick} />
@@ -289,7 +311,7 @@ export default function App() {
             <Feedback isOpen={isFeedbackOpen} onClose={closeFeedbackModal} />
             <Credits isOpen={isCreditsOpen} onClose={closeCreditsModal} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailedModal} />
-            <Words isOpen={isWordsOpen} onClose={closeWordsModal} gameId={game.openGameId}/>
+            <Words isOpen={isWordsOpen} onClose={closeWordsModal} gameId={game.openGameId} />
         </main>
     )
 }
