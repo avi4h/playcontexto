@@ -155,7 +155,7 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
             {
                 stage > 1 && !error && !loading && game.gameData[0].lastGuess[0] && (
                     <div className={`relative w-full h-[45px] flex items-center justify-between mt-4 mb-5`} key={game.gameData[0].lastGuess[0].lemma}>
-                        <div className={`absolute w-full h-full bg-con-600 rounded-[8px] border-[3px] border-con-900`}>
+                        <div className={`absolute w-full h-full overflow-hidden  bg-con-600 rounded-[8px] border-[3px] border-con-900`}>
                             <div
                                 className={`min-w-[1%] h-full rounded-[5px] ${getBarColor(game.gameData[0].lastGuess[0].distance)} `}
                                 style={{

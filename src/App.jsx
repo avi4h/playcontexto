@@ -302,8 +302,8 @@ export default function App() {
     function closeFaqDetailedModal() { setIsFaqDetailedOpen(false) }
     function closeWordsModal() { setIsWordsOpen(false) }
 
-    return (
-        <main className="flex flex-col justify-center items-center max-w-[480px] sm:w-[480px] md:w-[480px] lg:w-[480px] px-[15px]">
+    return (<main className="flex flex-col justify-center items-center w-full max-w-[480px] px-[15px]">
+        
             <Header list={list} isDropdownOpen={isDropdownOpen} setIsDropdownOpen={setIsDropdownOpen} stage={game.stage} />
             {
                 game.gameData.length > 0 && (

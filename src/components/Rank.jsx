@@ -21,7 +21,7 @@ export default function Rank({ gameData }) {
                     let highlight = curr === word.distance  
                     return (
                         <div className={`relative w-full h-[42px] flex items-center justify-between`} key={word.lemma}>
-                            <div className={`absolute w-full h-full bg-con-600 rounded-[8px] ${highlight ? 'border-[3px] border-con-900' : ''}`}>
+                            <div className={`absolute w-full h-full bg-con-600 overflow-hidden rounded-[8px] ${highlight ? 'border-[3px] border-con-900' : ''}`}>
                                 <div
                                     className={`min-w-[1%] h-full rounded-[5px] ${getBarColor(word.distance)} `}
                                     style={{
