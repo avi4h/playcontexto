@@ -1,21 +1,33 @@
 import React, { useState } from "react"
 import { getBarWidth, getBarColor } from "../store/utils"
 
-export default function Input({ game, setGame , loading, setLoading, error, setError}) {
+export default function Input({ game, setGame, loading, setLoading, error, setError }) {
     const [inputValue, setInputValue] = useState("")
     let stage = game.stage
 
     const handleKeyDown = async (event) => {
-        if (event.key === "Enter" && inputValue.trim() !== "") {
+        if (event.key === 'Enter' && /^[a-zA-Z\s]+$/.test(inputValue.trim()) && /\s/.test(inputValue.trim())) {
+            setError({ error: "Please enter a single word without spaces" })
+            setInputValue("")
+            setLoading(false)
+        }
+        else if (event.key === 'Enter' && /[^a-zA-Z]/.test(inputValue.trim())) {
+            setError({ error: "Please enter a word containing only letters" })
+            setInputValue("")
+            setLoading(false)
+        }
+        else if (event.key === "Enter" && inputValue.trim() !== "") {
+            const cleanInput = (value) => value.toLowerCase().trim()
+            const finalWord = cleanInput(inputValue)
             try {
                 setLoading(true)
-                if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.lemma === inputValue.trim()) !== -1) {
-                    setError({ word: inputValue.trim()})
+                if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.lemma === finalWord) !== -1) {
+                    setError({ word: finalWord })
                     setInputValue("")
                     setLoading(false)
                 }
                 else {
-                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${inputValue.trim()}`)}`);
+                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`);
 
                     if (response.ok) {
                         const data = await response.json()
@@ -101,6 +113,7 @@ export default function Input({ game, setGame , loading, setLoading, error, setE
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    maxLength={20}
                 />
             </section>
             {
@@ -126,7 +139,7 @@ export default function Input({ game, setGame , loading, setLoading, error, setE
                 )
             }
             {
-                stage >1 && !loading && error && error.word && (
+                stage > 1 && !loading && error && error.word && (
                     <div className="w-full h-[45px] flex flex-col items-left justify-center mt-4 mb-5" >
                         <p className="text-con-900 font-bold text-lg pl-2" >The word <span className="font-black" >{error.word}</span> was already guessed.</p>
                     </div>
@@ -140,7 +153,7 @@ export default function Input({ game, setGame , loading, setLoading, error, setE
                 )
             }
             {
-                stage >1 && !error && !loading && game.gameData[0].lastGuess[0] && (
+                stage > 1 && !error && !loading && game.gameData[0].lastGuess[0] && (
                     <div className={`relative w-full h-[45px] flex items-center justify-between mt-4 mb-5`} key={game.gameData[0].lastGuess[0].lemma}>
                         <div className={`absolute w-full h-full bg-con-600 rounded-[8px] border-[3px] border-con-900`}>
                             <div
