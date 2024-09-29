@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { getBarWidth, getBarColor } from "../store/utils"
+import { getBarWidth, getBarColor,  WORDS_LOADING_TEXT, WORDS_ERROR_TEXT, WORDS_CLOSE_TIMEOUT } from "../store/utils"
+import useModalAnimation from '../store/useModalAnimation'
+import Loading from "../components/Loading"
 
 export default function Words({ isOpen, onClose, gameId }) {
 
-    const [visible, setVisible] = useState(false)
-    const [animate, setAnimate] = useState(false)
+    const { visible, animate } = useModalAnimation(isOpen)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [words, setWords] = useState([])
 
     useEffect(() => {
-
         if (isOpen) {
-            setVisible(true)
-            setTimeout(() => setAnimate(true), 30)
             fetchWords()
-        } else {
-            setAnimate(false)
-            setTimeout(() => setVisible(false), 150)
         }
-
     }, [isOpen])
+
+    const handleError = () => {
+        setLoading(false)
+        setError(true)
+        setTimeout(() => {
+            onClose()
+        }, WORDS_CLOSE_TIMEOUT)
+    }
 
     async function fetchWords() {
         setLoading(true)
+        setError(false)
         try {
             const cacheBuster = `?_=${new Date().getTime()}`
             const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}${cacheBuster}`)
@@ -33,22 +36,12 @@ export default function Words({ isOpen, onClose, gameId }) {
                 setWords(data.words)
                 setLoading(false)
             }
-            else{
-                setLoading(false)
-                setError(true)
-                setTimeout(() => {
-                    setError(false)
-                    onClose()
-                }, 3000)
+            else {
+                handleError()
             }
         }
         catch (error) {
-            setLoading(false)
-            setError(true)
-            setTimeout(() => {
-                setError(false)
-                onClose()
-            }, 3000)
+            handleError()
         }
     }
 
@@ -60,24 +53,11 @@ export default function Words({ isOpen, onClose, gameId }) {
                 <div className='cursor-pointer absolute -top-[14px] -right-[14px] rounded-full border-[3px] border-con-900 z-15 bg-con-200' onClick={onClose} >
                     <img src="./close.svg" alt="Close" className=" w-[28px] h-[28px] " />
                 </div>
-                { loading && 
-                    <div className="loading-text ml-auto mr-auto p-4">
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 1 }}>L</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 2 }}>o</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 3 }}>a</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 4 }}>d</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 5 }}>i</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 6 }}>n</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 7 }}>g</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 8 }}>.</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 9 }}>.</span>
-                        <span className='font-bold text-con-900 text-lg' style={{ '--i': 10 }}>.</span>
-                    </div>
+                { loading && <Loading text={WORDS_LOADING_TEXT} padding={"p-4"}/> }
+                {!loading && error &&
+                    <div className="font-bold text-con-900 text-lg mr-auto p-4">{WORDS_ERROR_TEXT}</div>
                 }
-                { !loading &&  error && 
-                    <div className="font-bold text-con-900 text-lg mr-auto p-4">Error, try again....</div>
-                }  
-                { !loading && !error && words &&
+                {!loading && !error && words &&
                     <div className="text-center overflow-y-scroll max-h-[450px] pt-7 pb-4 pl-7 pr-4 mb-[6px]">
                         <div className="flex justify-start items-center mt-2">
                             <p className=" text-base leading-none font-bold">Today's word (#<span className="text-base leading-none font-black" >{gameId}</span>) was:</p>

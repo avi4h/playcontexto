@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
+import useModalAnimation from '../store/useModalAnimation' 
 
 export default function Credits({ isOpen, onClose }) {
-    const [visible, setVisible] = useState(false)
-    const [animate, setAnimate] = useState(false)
-
-    useEffect(() => {
-        if (isOpen) {
-            setVisible(true)
-            setTimeout(() => setAnimate(true), 30)
-        } else {
-            setAnimate(false)
-            setTimeout(() => setVisible(false), 150) 
-        }
-    }, [isOpen])
+    
+    const { visible, animate } = useModalAnimation(isOpen)
 
     if (!isOpen && !visible) return null
 

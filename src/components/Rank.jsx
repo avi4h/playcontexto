@@ -1,17 +1,14 @@
 import React from "react"
 import { getBarWidth, getBarColor } from "../store/utils"
 
-export default function Rank({ gameData }) {
+export default function Rank({ gameData, order}) {
 
     let words = []
     let curr = null
     if (gameData && gameData.guessHistory) {
         curr = gameData.lastGuess[0].distance
-        if (gameData.postGame) {
-            words = [...gameData.guessHistory, ...gameData.postGame].sort((a, b) => a.distance - b.distance)
-        } else {
-            words = gameData.guessHistory.sort((a, b) => a.distance - b.distance)
-        }
+        words = [...gameData.guessHistory, ...gameData.postGame]
+        words = order === "guessorder" ? words.reverse() : words.sort((a, b) => a.distance - b.distance)
     }
 
     return (

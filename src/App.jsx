@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Header from "./components/Header"
 import Score from "./components/Score"
@@ -21,6 +21,27 @@ import HowToPlay from "./modals/HowToPlay"
 import Words from "./modals/Words"
 
 import { getTodaysGameId, randomTipDistance, nextTipDistance, halfTipDistance } from './store/utils'
+
+const useLocalStorageState = (key, defaultValue) => {
+    const [state, setState] = useState(() => {
+        const saved = localStorage.getItem(key)
+        return saved !== null ? JSON.parse(saved) : defaultValue
+    })
+
+    useEffect(() => {
+        localStorage.setItem(key, JSON.stringify(state))
+    }, [key, state])
+
+    return [state, setState]
+}
+
+// Custom hook for managing modal state
+const useModalState = () => {
+    const [isOpen, setIsOpen] = useState(false)
+    const open = useCallback(() => setIsOpen(true), [])
+    const close = useCallback(() => setIsOpen(false), [])
+    return [isOpen, open, close]
+}
 
 export default function App() {
 
@@ -137,7 +158,7 @@ export default function App() {
                 postGame: []
             })
             gotGame.openGameId = todaysGameId
-            gotGame.stage = 0
+            gotGame.stage = 1
 
             setGame(gotGame)
         }
@@ -157,7 +178,6 @@ export default function App() {
                 ],
                 stage: 0,
                 openGameId: todaysGameId
-
             })
         }
     }, [todaysGameId])
@@ -168,6 +188,7 @@ export default function App() {
     }, [game])
 
     const onSelectGame = (newGameId) => {
+        setError(null)
         setGame((prevGame) => {
             let newGame = { ...prevGame }
             newGame.openGameId = newGameId
@@ -312,7 +333,7 @@ export default function App() {
                         { game.stage === 4 && <Won game={game} setIsPrevOpen={setIsPrevOpen} setIsWordsOpen={setIsWordsOpen} /> }
                         <Score game={game.gameData[0].gameId} guesses={game.gameData[0].numberOfAttempts} hints={game.gameData[0].numberOfTips} />
                         <Input game={game} setGame={setGame} loading={loading} error={error} setLoading={setLoading} setError={setError} />
-                        { game.stage > 1 && <Rank gameData={game.gameData[0]} /> }
+                        { game.stage > 1 && <Rank gameData={game.gameData[0]} order={order}/> }
                         { showInitialContent && game.stage === 0 && <How /> }
                         { showInitialContent && game.stage === 0 && <Faq /> }
                         { showInitialContent && game.stage === 0 && <Foot setIsFaqDetailedOpen={setIsFaqDetailedOpen} stage={game.stage} /> }

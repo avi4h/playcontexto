@@ -1,105 +1,105 @@
 import React, { useState } from "react"
-import { getBarWidth, getBarColor } from "../store/utils"
+import { getBarWidth, getBarColor, wordExists, ERROR_MESSAGES, INPUT_LOADING_TEXT } from "../store/utils"
+import Loading from "./Loading"
 
 export default function Input({ game, setGame, loading, setLoading, error, setError }) {
     const [inputValue, setInputValue] = useState("")
     let stage = game.stage
 
     const handleKeyDown = async (event) => {
-        if (event.key === 'Enter' && /^[a-zA-Z\s]+$/.test(inputValue.trim()) && /\s/.test(inputValue.trim())) {
-            setError({ error: "Please enter a single word without spaces" })
-            setInputValue("")
-            setLoading(false)
-        }
-        else if (event.key === 'Enter' && /[^a-zA-Z]/.test(inputValue.trim())) {
-            setError({ error: "Please enter a valid word" })
-            setInputValue("")
-            setLoading(false)
-        }
-        else if (event.key === "Enter" && inputValue.trim() !== "") {
-            const cleanInput = (value) => value.toLowerCase().trim()
-            const finalWord = cleanInput(inputValue)
-            try {
-                setLoading(true)
-                if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.lemma === finalWord) !== -1) {
-                    setError({ word: finalWord })
-                    setInputValue("")
-                    setLoading(false)
-                }
-                else {
-                    const cacheBuster = `?_=${new Date().getTime()}`
-                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}${cacheBuster}`)
-                    if (response.ok) {
-                        const data = await response.json()
-                        if (data.error) {
-                            setError({ error: data.error })
-                            setInputValue("")
-                            setLoading(false)
-                        }
-                        else if (game.gameData[0].gaveUp || game.gameData[0].foundWord) {
-                            setError(null)
-                            const word = {
-                                lemma: data.lemma,
-                                distance: data.distance
-                            }
-                            setGame(prevGame => {
-                                prevGame.gameData[0].postGame.push(word)
-                                prevGame.gameData[0].lastGuess = [word]
-                                return prevGame
-                            })
-                            setInputValue("")
-                            setLoading(false)
-                        }
-                        else {
-                            const word = {
-                                lemma: data.lemma,
-                                distance: data.distance
-                            }
-                            if (game.gameData[0].guessHistory.findIndex((currWord) => currWord.distance === word.distance) !== -1) {
-                                setError({ word: currWord.lemma })
-                                setInputValue("")
-                                setLoading(false)
-                            }
-                            else {
-                                setError(null)
-                                const updatedGame = { ...game }
-                                updatedGame.gameData[0].lastGuess = [word]
-                                if (data.distance === 0) {
-                                    updatedGame.stage = 4
-                                    updatedGame.gameData[0].foundWord = data.lemma
-                                    updatedGame.gameData[0].postGame.push(word)
-                                }
-                                else if (data.foundWord) {
-                                    updatedGame.stage = 4
-                                    updatedGame.gameData[0].postGame.push(word)
-                                }
-                                else if (data.gaveUp) {
-                                    updatedGame.stage = 3
-                                    updatedGame.gameData[0].postGame.push(word)
-                                }
-                                else {
-                                    updatedGame.stage = 2
-                                    updatedGame.gameData[0].guessHistory.push(word)
-                                    updatedGame.gameData[0].numberOfAttempts += 1
-                                }
-                                setGame(updatedGame)
-                                setInputValue("")
-                                setLoading(false)
-                            }
-                        }
-                    }
-                    else {
-                        setError({ error: "Error fetching the word, please try again" });
-                        setInputValue("")
-                        setLoading(false)
-                    }
-                }
-            } catch (error) {
-                setError({ error: "Error fetching the word, please try again" })
-                setInputValue("")
-                setLoading(false)
+        if (event.key === "Enter") {
+            const trimmedInput = inputValue.trim()
+            if (/^[a-zA-Z\s]+$/.test(trimmedInput) && /\s/.test(trimmedInput)) {
+                handleError(ERROR_MESSAGES.singleWord)
+            } else if (/[^a-zA-Z]/.test(trimmedInput)) {
+                handleError(ERROR_MESSAGES.invalidWord)
+            } else if (trimmedInput !== "") {
+                await handleWordSubmission(trimmedInput.toLowerCase())
             }
         }
+    }
+
+    const handleError = (message, theWord = "") => {
+        setError(theWord ? { word: theWord } : { error: message })
+        setInputValue("")
+        setLoading(false)
+    }
+
+    const handleWordSubmission = async (finalWord) => {
+        try {
+            setLoading(true)
+            const wordExistsInHistory = wordExists(finalWord, game.gameData[0].guessHistory)
+            const wordExistsInPostGame = wordExists(finalWord, game.gameData[0].postGame)
+
+            if (wordExistsInHistory || wordExistsInPostGame) {
+                handleError("", finalWord)
+            } else {
+                const cacheBuster = `?_=${new Date().getTime()}`
+                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}${cacheBuster}`)
+                if (response.ok) {
+                    const data = await response.json()
+                    if (data.error) {
+                        handleError(data.error)
+                    } else {
+                        processWordData(data)
+                    }
+                } else {
+                    handleError(ERROR_MESSAGES.fetchError)
+                }
+            }
+        } catch (error) {
+            handleError(ERROR_MESSAGES.fetchError)
+        }
+    }
+
+    const processWordData = (data) => {
+        const word = { lemma: data.lemma, distance: data.distance }
+        const wordExistsInHistory = wordExists(data.lemma, game.gameData[0].guessHistory)
+        const wordExistsInPostGame = wordExists(data.lemma, game.gameData[0].postGame)
+
+
+        if (game.gameData[0].gaveUp || game.gameData[0].foundWord) {
+            
+            if (wordExistsInHistory || wordExistsInPostGame) {
+                handleError("", data.lemma)
+            }
+            else {
+                const val = game.gameData[0].gaveUp ? 3 : 4
+                updateGameState(word, true, val)
+            }
+        } else {
+            const wordExists = game.gameData[0].guessHistory.some((currWord) => currWord.distance === word.distance)
+
+            if (wordExistsInHistory) {
+                handleError("", data.lemma)
+            } else {
+                updateGameState(word, false)
+            }
+        }
+    }
+
+    const updateGameState = (word, isPostGame, val = 2) => {
+        setError(null)
+        setGame((prevGame) => {
+            const updatedGame = { ...prevGame }
+            updatedGame.gameData[0].lastGuess = [word]
+            if (isPostGame) {
+                updatedGame.gameData[0].postGame.push(word)
+                updatedGame.stage = val
+            } else {
+                updatedGame.gameData[0].guessHistory.push(word)
+                updatedGame.gameData[0].numberOfAttempts += 1
+            }
+            if (word.distance === 0) {
+                updatedGame.stage = 4
+                updatedGame.gameData[0].foundWord = word.lemma
+            } else {
+                updatedGame.stage = val
+            }
+            return updatedGame
+        })
+        setInputValue("")
+        setLoading(false)
     }
 
     return (
@@ -119,22 +119,7 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
             {
                 loading && (
                     <div className="w-full h-[45px] flex flex-col items-left justify-center mt-4 mb-5 pl-2" >
-                        <div className="loading-text mr-auto p-1">
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 1 }}>C</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 2 }}>a</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 3 }}>l</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 4 }}>c</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 5 }}>u</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 6 }}>l</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 7 }}>a</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 8 }}>t</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 9 }}>i</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 10 }}>n</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 11 }}>g</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 12 }}>.</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 13 }}>.</span>
-                            <span className='font-bold text-con-900 text-lg' style={{ '--i': 14 }}>.</span>
-                        </div>
+                        <Loading text={INPUT_LOADING_TEXT} padding={"p-1"}/>
                     </div>
                 )
             }
@@ -158,9 +143,7 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
                         <div className={`absolute w-full h-full overflow-hidden  bg-con-600 rounded-[8px] border-[3px] border-con-900`}>
                             <div
                                 className={`min-w-[1%] h-full rounded-[5px] ${getBarColor(game.gameData[0].lastGuess[0].distance)} `}
-                                style={{
-                                    width: getBarWidth(game.gameData[0].lastGuess[0].distance)
-                                }}
+                                style={{ width: getBarWidth(game.gameData[0].lastGuess[0].distance) }}
                             />
                         </div>
                         <div className="relative w-full flex items-center justify-between">

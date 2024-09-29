@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { isMobile, isFirefox, isChrome, getChart, SHARE_RESET_TIMEOUT } from '../store/utils'
+import useShareMessage from '../store/useShareMessage'
 
 export default function Won({ setIsPrevOpen, setIsWordsOpen, game }) {
 
@@ -6,85 +8,17 @@ export default function Won({ setIsPrevOpen, setIsWordsOpen, game }) {
     const guesses = game.gameData[0].guessHistory
     const attempts = game.gameData[0].numberOfAttempts
     const tips = game.gameData[0].numberOfTips
-    const userAgent = navigator.userAgent
+    const chart =getChart(guesses)
+    
     const guessText = attempts === 1 ? 'guess' : 'guesses'
     const tipText = tips === 1 ? 'hint' : 'hints'
     const finalTipText = tips > 0 ? ` and ${tips} ${tipText}` : ''
 
-    const isMobile = () => /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
-    const isFirefox = () => userAgent.toLowerCase().indexOf('firefox') !== -1
-    const isChrome = () => /Chrome|Edge|OPR/i.test(userAgent)
-
-    const [sharedMsg, setSharedMsg] = useState("Share")
-
-    const displaySharedMsg = (msg) => {
-        setSharedMsg(msg)
-        setTimeout(() => setSharedMsg("Share"), 3000)
-    }
-
-    const getChart = (guessHistory) => {
-        let greenCount = 0
-        let yellowCount = 0
-        let redCount = 0
-        let greenSquares = 0
-        let yellowSquares = 0
-        let redSquares = 0
-
-        guesses.forEach((item) => {
-            if (item.distance < 300) greenCount += 1
-            else if (item.distance < 1500) yellowCount += 1
-            else redCount += 1
-        })
-
-        const max = Math.max(greenCount, yellowCount, redCount)
-        let total = 20
-
-        if (max <= 25) {
-            total = 5
-        } else if (max <= 50) {
-            total = 10
-        } else if (max <= 100) {
-            total = 15
-        }
-
-        const totalWords = guessHistory.length
-
-        if (totalWords > 0) {
-            greenSquares = Math.round((greenCount / totalWords) * total)
-            yellowSquares = Math.round((yellowCount / totalWords) * total)
-            redSquares = Math.round((redCount / totalWords) * total)
-
-            greenSquares = greenSquares === 0 && greenCount > 0 ? 1 : greenSquares
-            yellowSquares = yellowSquares === 0 && yellowCount > 0 ? 1 : yellowSquares
-            redSquares = redSquares === 0 && redCount > 0 ? 1 : redSquares
-
-            greenSquares = Math.min(greenCount, greenSquares)
-            yellowSquares = Math.min(yellowCount, yellowSquares)
-            redSquares = Math.min(redCount, redSquares)
-        }
-
-        let chart = ''
-
-        for (let i = 0; i < greenSquares; i++) {
-            chart += '🟩'
-        }
-        chart += ` ${greenCount}\n`
-
-        for (let i = 0; i < yellowSquares; i++) {
-            chart += '🟨'
-        }
-        chart += ` ${yellowCount}\n`
-        for (let i = 0; i < redSquares; i++) {
-            chart += '🟥'
-        }
-        chart += ` ${redCount}`
-
-        return chart
-    }
+    const [sharedMsg, displaySharedMsg] = useShareMessage("Share", SHARE_RESET_TIMEOUT)
 
     const handleShareButton = () => {
         let messageText = `I played glovewords.vercel.app #${gameId} and got it in ${attempts} ${guessText}${finalTipText}. \n\n`
-        messageText += getChart(guesses)
+        messageText += chart
 
         if ((isMobile() || isChrome()) && !isFirefox() && navigator.share) {
             navigator
@@ -114,7 +48,7 @@ export default function Won({ setIsPrevOpen, setIsWordsOpen, game }) {
                     {tips > 0 && <span className='font-black'>{tips}</span>}
                     {tips > 0 && ` ${tipText}.`}
                 </p>
-                <div className='text-lg font-bold text-wrap text-left my-[15px] whitespace-pre'>{getChart(guesses)}</div>
+                <div className='text-lg font-bold text-wrap text-left my-[15px] whitespace-pre'>{chart}</div>
                 <button
                     type="button"
                     onClick={handleShareButton}

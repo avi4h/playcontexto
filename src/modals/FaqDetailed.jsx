@@ -1,44 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom'
+import useModalAnimation from '../store/useModalAnimation'  
+import { FAQ_DATA } from '../store/utils'
 
 export default function FaqDetailed({ isOpen, onClose }) {
 
-    const faq = [
-        {
-            question: "How is the word order defined?",
-            answer: "The game uses an artificial intelligence algorithm and thousands of texts to calculate the similarity of the words in relation to the word of the day. Not necessarily it is related to the meaning of the words, but to the proximity in which they are used on the internet. For example, if the word of the day were “infinite”, words related to “love” or words related to “universe” might be close to the word of the day because “infinite” is commonly used in those two different contexts. In similar reasoning, if “tv” and “television”, for example, are in very different positions, it means that they are used differently in relation to the word of the day, despite being the same object."
-        },
-        {
-            question: "How can I ask for a hint?",
-            answer: "Click on the three dots located on the upper right corner of the screen and select the option “Hint” and it will reveal one word."
-        },
-        {
-            question: "I couldn't figure the word out. Can I see what the word of the day is?",
-            answer: "In case you don't want to keep trying to guess the word, you have the option to give up. In order to do it, click on the three dots located on the upper right corner of the screen and select the option “Give up”. The word of the day will be displayed on the screen."
-        },
-        {
-            question: "I want to play more than one game a day, is that possible?",
-            answer: "Yes. It is possible to play the games of previous days since Contexto launch day or to play a random game. To do so, click on the three dots located on the upper right corner of the screen and select the option “Previous games”. You can choose the game of some specific day or play on random mode."
-        },
-        {
-            question: "I couldn't play yesterday. Can I still play yesterday's game?",
-            answer: "Yes, the previous games can be played anytime. To do so, click on the three dots located on the upper right corner of the screen and select the option “Previous games”. You can choose the game of some specific day or play on random mode."
-        }
-    ]
-
-    const [visible, setVisible] = useState(false)
-    const [animate, setAnimate] = useState(false)
-    const [visibilityStates, setVisibilityStates] = useState(faq.map(() => false))
-
-    useEffect(() => {
-        if (isOpen) {
-            setVisible(true)
-            setTimeout(() => setAnimate(true), 30)
-        } else {
-            setAnimate(false)
-            setTimeout(() => setVisible(false), 150) 
-        }
-    }, [isOpen])
+    const { visible, animate } = useModalAnimation(isOpen)
+    const [visibilityStates, setVisibilityStates] = useState(FAQ_DATA.map(() => false))
 
     if (!isOpen && !visible) return null
     
@@ -52,9 +20,9 @@ export default function FaqDetailed({ isOpen, onClose }) {
     }
 
 
-    const faqList = faq.map((item, index) => {
+    const faqList = FAQ_DATA.map((item, index) => {
         return (
-            <div key={index} className={`flex flex-col justify-start items-left w-full pb-[10px] ${index === (faq.length - 1) ? "" : "border-b border-con-100"}`}>
+            <div key={index} className={`flex flex-col justify-start items-left w-full pb-[10px] ${index === (FAQ_DATA.length - 1) ? "" : "border-b border-con-100"}`}>
                 <div className="flex flex-row gap-[8px] justify-between items-left w-full cursor-pointer" onClick={() => toggleVisibility(index)}>
                     <h5 className="text-base leading-normal font-bold">{item.question}</h5>
                     <img src="./expand.svg" className={`w-[25px] h-[25px] transition-transform duration-200 ${visibilityStates[index] ? 'rotate-180' : 'rotate-0'}`} alt="see answer" />
