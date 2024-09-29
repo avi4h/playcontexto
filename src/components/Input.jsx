@@ -12,7 +12,7 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
             setLoading(false)
         }
         else if (event.key === 'Enter' && /[^a-zA-Z]/.test(inputValue.trim())) {
-            setError({ error: "Please enter a word containing only letters" })
+            setError({ error: "Please enter a valid word" })
             setInputValue("")
             setLoading(false)
         }
@@ -27,8 +27,8 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
                     setLoading(false)
                 }
                 else {
-                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`);
-
+                    const cacheBuster = `?_=${new Date().getTime()}`
+                    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}${cacheBuster}`)
                     if (response.ok) {
                         const data = await response.json()
                         if (data.error) {
@@ -89,7 +89,7 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
                         }
                     }
                     else {
-                        setError({ error: "Error fetching the word, please try again" })
+                        setError({ error: "Error fetching the word, please try again" });
                         setInputValue("")
                         setLoading(false)
                     }

@@ -229,7 +229,7 @@ export default function App() {
                 setLoading(false)
             })
             .catch((error) => {
-                setError({ error: "Error fetching the top word, please try again" })
+                setError({ error: "Error, please try again" })
                 setLoading(false)
             })
     }
