@@ -30,8 +30,7 @@ export default function Words({ isOpen, onClose, gameId }) {
         setLoading(true)
         setError(false)
         try {
-            const cacheBuster = `?_=${new Date().getTime()}`
-            const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}${cacheBuster}`)
+            const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}`)
             if (response.data) {
                 const data = response.data
                 setWords(data.words)

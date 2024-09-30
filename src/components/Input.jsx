@@ -35,8 +35,8 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
             if (wordExistsInHistory || wordExistsInPostGame) {
                 handleError("", finalWord)
             } else {
-                const cacheBuster = `?_=${new Date().getTime()}`
-                const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}${cacheBuster}`)
+                //const cacheBuster = `?_=${new Date().getTime()}`
+                const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
                 if (response.data) {
                     const data = response.data
                     if (data.error) {
