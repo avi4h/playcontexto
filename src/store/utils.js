@@ -42,6 +42,8 @@ const ERROR_MESSAGES = {
     singleWord: "Please enter a single word without spaces",
     invalidWord: "Please enter a valid word",
     fetchError: "Error fetching the word, please try again.",
+    giveUpError: "Error, please try again",
+    hintError: "Error fetching the hint, try again"
 }
 
 const isMobile = () => /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
@@ -204,6 +206,38 @@ const getChart = (guessHistory) => {
     return chart
 }
 
+const getGiveUp = async (newGameId, setError, setLoading) => {
+    try {
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
+        if (response.ok) {
+            const data = await response.json()
+            return { lemma: data.lemma, distance: data.distance }
+        } else {
+            setError({ error: ERROR_MESSAGES.giveUpError })
+            setLoading(false)
+        }
+    } catch (error) {
+        setError({ error: ERROR_MESSAGES.giveUpError  })
+        setLoading(false)
+    }
+}
+
+const getHint = async (gameId, distance, setError, setLoading) => {
+    try {
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
+        if (response.ok) {
+            const data = await response.json()
+            return { lemma: data.lemma, distance: data.distance }
+        } else {
+            setError({ error: ERROR_MESSAGES.hintError })
+            setLoading(false)
+        }
+    } catch (error) {
+        setError({ error: ERROR_MESSAGES.hintError})
+        setLoading(false)
+    }
+}
+
 export {
     ANIMATION_DELAY,
     CLOSE_ANIMATION_DELAY,
@@ -226,5 +260,7 @@ export {
     getTodaysGameId,
     getBarWidth,
     getBarColor,
-    getChart
+    getChart, 
+    getGiveUp,
+    getHint
 }
