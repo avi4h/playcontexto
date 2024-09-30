@@ -1,4 +1,3 @@
-import axios from 'axios'
 import React, { useState } from "react"
 import { getBarWidth, getBarColor, wordExists, ERROR_MESSAGES, INPUT_LOADING_TEXT } from "../store/utils"
 import Loading from "./Loading"
@@ -36,9 +35,9 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
                 handleError("", finalWord)
             } else {
                 //const cacheBuster = `?_=${new Date().getTime()}`
-                const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
-                if (response.data) {
-                    const data = response.data
+                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
+                if (response.ok) {
+                    const data = await response.json()
                     if (data.error) {
                         handleError(data.error)
                     } else {
