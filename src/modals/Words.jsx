@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { getBarWidth, getBarColor, WORDS_LOADING_TEXT, WORDS_ERROR_TEXT, WORDS_CLOSE_TIMEOUT } from "../store/utils"
@@ -30,9 +31,9 @@ export default function Words({ isOpen, onClose, gameId }) {
         setError(false)
         try {
             const cacheBuster = `?_=${new Date().getTime()}`
-            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}${cacheBuster}`)
-            if (response.ok) {
-                const data = await response.json()
+            const response = await axios.get(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}${cacheBuster}`)
+            if (response.data) {
+                const data = response.data
                 setWords(data.words)
                 setLoading(false)
             }
