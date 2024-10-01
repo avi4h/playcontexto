@@ -208,7 +208,7 @@ const getChart = (guessHistory) => {
 
 const getGiveUp = async (newGameId, setError, setLoading) => {
     try {
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.contexto.me/machado/en/giveup/${newGameId}`)}`)
         if (response.ok) {
             const dataJSON = await response.json()
             const data = JSON.parse(dataJSON.contents)
@@ -225,7 +225,7 @@ const getGiveUp = async (newGameId, setError, setLoading) => {
 
 const getHint = async (gameId, distance, setError, setLoading) => {
     try {
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.contexto.me/machado/en/tip/${gameId}/${distance}`)}`)
         if (response.ok) {
             const dataJSON = await response.json()
             const data = JSON.parse(dataJSON.contents)

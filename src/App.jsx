@@ -108,7 +108,7 @@ export default function App() {
             setGame(updatedGame)
             setLoading(false)
         }
-    }, [game, setGame, setError, setLoading, closeGiveUp])
+    }, [game, setGame])
 
     const handleHintClick = useCallback(async () => {
         setIsDropdownOpen(false)
@@ -127,7 +127,7 @@ export default function App() {
             setGame(updatedGame)
             setLoading(false)
         }
-    }, [difficulty, game, setGame, setError, setLoading, setIsDropdownOpen])
+    }, [difficulty, game])
 
     const list = [
         { icon: "./q-rounded.svg", text: "How to play", click: openHowToPlay },

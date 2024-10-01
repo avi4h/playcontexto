@@ -14,9 +14,7 @@ const useGameState = () => {
         const storedGame = localStorage.getItem('game')
         const gotGame = JSON.parse(storedGame)
 
-        if (storedGame && gotGame.gameData.findIndex((currGame) => currGame.gameId === todaysGameId && (currGame.foundWord || currGame.gaveUp)) !== -1) {
-            setGame(gotGame)
-        } else if (storedGame && gotGame.gameData.findIndex((currGame) => currGame.gameId === todaysGameId) === -1) {
+        if (storedGame && gotGame.gameData.findIndex((currGame) => currGame.gameId === todaysGameId) === -1) {
             gotGame.gameData.unshift({
                 gameId: todaysGameId,
                 foundWord: "",
@@ -31,7 +29,11 @@ const useGameState = () => {
             gotGame.stage = 1
 
             setGame(gotGame)
-        } else {
+        }
+        else if (storedGame) {
+            setGame(gotGame)
+        }  
+        else {
             setGame({
                 gameData: [
                     {
