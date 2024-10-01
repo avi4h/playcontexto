@@ -29,9 +29,10 @@ export default function Words({ isOpen, onClose, gameId }) {
         setLoading(true)
         setError(false)
         try {
-            const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}`)
+            const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.contexto.me/machado/en/top/${gameId}`)}`)
             if (response.ok) {
-                const data = await response.json()
+                const dataJSON = await response.json()
+                const data = JSON.parse(dataJSON.contents)
                 setWords(data.words)
                 setLoading(false)
             }

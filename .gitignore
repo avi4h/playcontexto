@@ -25,4 +25,4 @@ dist-ssr
 
 # Project specific
 .env
-api.txt
+.sh

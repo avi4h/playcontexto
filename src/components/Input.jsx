@@ -35,9 +35,10 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
                 handleError("", finalWord)
             } else {
                 //const cacheBuster = `?_=${new Date().getTime()}`
-                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
                 if (response.ok) {
-                    const data = await response.json()
+                    const dataJSON = await response.json()
+                    const data = JSON.parse(dataJSON.contents)
                     if (data.error) {
                         handleError(data.error)
                     } else {
