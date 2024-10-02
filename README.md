@@ -152,7 +152,7 @@ Contributions are welcome! You can contribute by reporting issues
 - GloVe for the word vector representations.
 - AllOrigins for the CORS proxy service.
 
-## 🎗 License
+## 🛡️ License
 
 This project is protected under the [MIT License](/LICENSE.txt).
 
