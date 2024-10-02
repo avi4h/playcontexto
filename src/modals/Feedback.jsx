@@ -26,7 +26,7 @@ export default function Feedback({ isOpen, onClose }) {
                         <p className=" text-xl leading-none font-black">Feedback</p>
                     </div>
                     <div className="flex flex-col gap-2 justify-start items-start mt-[15px] mb-[8px] ml-2">
-                        <p className='text-base font-bold text-wrap text-left'>Fill this small form and tell us your thoughts about Contexto to help us make the game better.</p>
+                        <p className='text-base font-bold text-wrap text-left'>Fill this small form and tell us your thoughts about PlayContexto to help us make the game better.</p>
                         <p className='text-base font-bold text-wrap text-left'>It takes less than a minute and we don't collect any personal information.</p>
                     </div>
                     <button

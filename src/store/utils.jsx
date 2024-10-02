@@ -30,7 +30,7 @@ const FAQ_DATA = [
     },
     {
         question: "I want to play more than one game a day, is that possible?",
-        answer: "Yes. It is possible to play the games of previous days since Contexto launch day or to play a random game. To do so, click on the three dots located on the upper right corner of the screen and select the option “Previous games”. You can choose the game of some specific day or play on random mode."
+        answer: "Yes. It is possible to play the games of previous days since PlayContexto launch day or to play a random game. To do so, click on the three dots located on the upper right corner of the screen and select the option “Previous games”. You can choose the game of some specific day or play on random mode."
     },
     {
         question: "I couldn't play yesterday. Can I still play yesterday's game?",
