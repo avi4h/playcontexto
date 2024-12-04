@@ -34,7 +34,6 @@ export default function Input({ game, setGame, loading, setLoading, error, setEr
             if (wordExistsInHistory || wordExistsInPostGame) {
                 handleError("", finalWord)
             } else {
-                //const cacheBuster = `?_=${new Date().getTime()}`
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.contexto.me/machado/en/game/${game.gameData[0].gameId}/${finalWord}`)}`)
                 if (response.ok) {
                     const dataJSON = await response.json()
