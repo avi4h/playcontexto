@@ -16,8 +16,6 @@ Faster replica of the popular word guessing game Contexto.me. Site has a perfect
 
 ## Features
 
-**Modern Tech Stack**: Built with React and styled using Tailwind CSS for a responsive and visually appealing interface.
-
 **GloVe Algorithm**: Utilizes the GloVe algorithm to build the word list, ensuring accurate and meaningful word proximity calculations.
 
 **High Performance**: Achieved a perfect score of 100/100 in Google Lighthouse for performance, accessibility, best practices, and SEO.
