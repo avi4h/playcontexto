@@ -24,19 +24,6 @@ Faster replica of the popular word guessing game Contexto.me. Site has a perfect
 
 **Error Handling**: Enhanced error handling with better UI transitions compared to the original Contexto.me.
 
-## Technical Stack
-
-<p align="center"> 
-    <img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=React&logoColor=black" alt="React"> 
-    <img src="https://img.shields.io/badge/Vite-646CFF.svg?style=flat&logo=Vite&logoColor=white" alt="Vite"> 
-    <img src="https://img.shields.io/badge/Tailwind%20CSS-38B2AC.svg?style=flat&logo=Tailwind%20CSS&logoColor=white" alt="Tailwind CSS">
-    <img src="https://img.shields.io/badge/GloVe-9463C6?style=flat&logo=Akamai&logoColor=white" alt="GloVe"> 
-    <img src="https://img.shields.io/badge/allOrigin-5CDFCB?style=flat&logo=origin&logoColor=white" alt="AllOrigins"> 
-    <img src="https://img.shields.io/badge/Contexto%20API-F4EDE2?style=flat&logo=serverless&logoColor=black" alt="Contexto API">
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript"> 
-    <img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white" alt="HTML5"> 
-</p>
-
 ## GloVe
 
 GloVe (Global Vectors for Word Representation) is an unsupervised learning algorithm. The training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space.GloVe is used to build the word list and calculate word proximities. This ensures that the game provides accurate and meaningful word proximity calculations, enhancing the overall user experience.
