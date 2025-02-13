@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { randomTipDistance, nextTipDistance, halfTipDistance, getGiveUp, getHint } from './store/utils'
+import { Analytics } from "@vercel/analytics/react"
 
 import Header from "./components/Header"
 import Score from "./components/Score"
@@ -168,6 +169,8 @@ export default function App() {
             <Credits isOpen={isCreditsOpen} onClose={closeCredits} />
             <FaqDetailed isOpen={isFaqDetailedOpen} onClose={closeFaqDetailed} />
             <Words isOpen={isWordsOpen} onClose={closeWords} gameId={game.openGameId} />
+
+            <Analytics/>
 
         </main>
     )
