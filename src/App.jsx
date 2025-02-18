@@ -134,7 +134,7 @@ export default function App() {
         { icon: "./q-rounded.svg", text: "How to play", click: openHowToPlay },
         { icon: "./hint.svg", text: "Hint", click: handleHintClick },
         { icon: "./flag.svg", text: "Give up", click: openGiveUp },
-        { icon: "./calendar.svg", text: "Previous games", click: openPrev },
+        { icon: "./calendar.svg", text: "PreviousGames", click: openPrev },
         { icon: "./settings.svg", text: "Settings", click: openSettings },
         { icon: "./info.svg", text: "Credits", click: openCredits },
         { icon: "./message.svg", text: "Feedback", click: openFeedback },
