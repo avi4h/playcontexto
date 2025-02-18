@@ -25,10 +25,10 @@ export default function Credits({ isOpen, onClose }) {
                         <img alt="Credits" src="./info.svg" className="w-[20px] h-[20px] mr-[10px]" />
                         <p className=" text-xl leading-none font-black">Credits</p>
                     </div>
-                    <div className="flex flex-col gap-2 justify-start items-start mt-[15px] mb-[8px] ml-2">
+                    <div className="flex flex-col gap-2 justify-start items-start mt-[15px]  ml-2">
                         <p className='text-base font-bold text-wrap text-left'>Replica of <a className='font-black cursor-pointer text-lg' href='https://www.contexto.me/'  target="_blank" rel="noopener noreferrer">Contexto</a>, but <span className='font-black text-lg'>without ads</span> and <span className='font-black text-lg'>cookies</span>.</p>
                         <p className='text-base font-bold text-wrap text-left'>All word proximity calculations are based on <a className='font-black cursor-pointer text-lg' href='https://nlp.stanford.edu/projects/glove/'  target="_blank" rel="noopener noreferrer">GloVe</a> .</p>
-                        <p className='text-base font-bold text-wrap text-left'>Made with 💜 by Avi</p>
+                        <p className='text-base font-bold text-wrap text-center mt-8 ml-[100px]'>Made with 💜 by Avi</p>
                     </div>
                 </div>
             </div>
