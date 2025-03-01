@@ -26,9 +26,9 @@ export default function Credits({ isOpen, onClose }) {
                         <p className=" text-xl leading-none font-black">Credits</p>
                     </div>
                     <div className="flex flex-col gap-2 justify-start items-start mt-[15px]  ml-2">
-                        <p className='text-base font-bold text-wrap text-left'>Replica of <a className='font-black cursor-pointer text-lg' href='https://www.contexto.me/'  target="_blank" rel="noopener noreferrer">Contexto</a>, but <span className='font-black text-lg'>without ads</span> and <span className='font-black text-lg'>cookies</span>.</p>
+                        <p className='text-base font-bold text-wrap text-left'>Replica of <a className='font-black cursor-pointer text-lg' href='https://playcontexto.vercel.app/'  target="_blank" rel="noopener noreferrer">Contexto</a>, but <span className='font-black text-lg'>without ads</span> and <span className='font-black text-lg'>cookies</span>.</p>
                         <p className='text-base font-bold text-wrap text-left'>All word proximity calculations are based on <a className='font-black cursor-pointer text-lg' href='https://nlp.stanford.edu/projects/glove/'  target="_blank" rel="noopener noreferrer">GloVe</a> .</p>
-                        <p className='text-base font-bold text-wrap text-center mt-8 ml-[100px]'>Made with 💜 by Avi</p>
+                        <p className='text-base font-bold text-wrap text-center mt-8 ml-[100px]'>Made by Avi</p>
                     </div>
                 </div>
             </div>
